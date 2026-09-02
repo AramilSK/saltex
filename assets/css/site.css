@@ -1,0 +1,761 @@
+/* ══════════════════════════════════════════════════════
+   САЛТЕКС — общий слой: токены, сетка, шапка, кнопки,
+   корзина, модальное окно, подвал, движение.
+   Подключается на всех страницах. Специфика страницы
+   живёт в её собственном <style> или в catalog.css.
+   ══════════════════════════════════════════════════════ */
+
+:root{
+  /* — фирменная палитра — */
+  --ink:        #111010;
+  --paper:      #FFFFFF;
+  --ochre:      #B78741;
+
+  /* — производные — */
+  --ink-70:     #111010b3;
+  --ink-45:     #11101073;
+  --ink-25:     #11101040;
+  --rule:       #1110101f;
+  --rule-hard:  #111010;
+  --shade:      #F4F3F1;
+  --ochre-dim:  #B8874126;
+  --stock:      #7FA650;
+
+  /* — типографика — */
+  --display: 'Unbounded', Georgia, serif;
+  --text:    'Golos Text', 'Helvetica Neue', sans-serif;
+  --mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  /* — модульная шкала — */
+  --t-2xs: .6875rem;
+  --t-xs:  .75rem;
+  --t-sm:  .8125rem;
+  --t-base:.9375rem;
+  --t-md:  clamp(1.05rem, .9rem + .7vw, 1.5rem);
+  --t-lg:  clamp(1.6rem, 1.1rem + 2.2vw, 3.1rem);
+  --t-xl:  clamp(2.5rem, .9rem + 7.4vw, 8rem);
+
+  /* — ритм — */
+  --gutter: clamp(.75rem, 1.6vw, 1.65rem);
+  --margin: clamp(1rem, 4.4vw, 4.5rem);
+  --bay:    clamp(4rem, 10vh, 8.5rem);
+
+  --ease: cubic-bezier(.22,1,.36,1);
+  --line: 1px solid var(--rule);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:7rem; }
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--text);
+  font-size:var(--t-base);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+img,svg{ max-width:100%; display:block; }
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure{ margin:0; }
+
+/* Неразрывные пробелы в разметке снимают висячие предлоги, но не спасают
+   от одинокого слова на последней строке: длину строк считает браузер.
+   text-wrap:pretty просит его перебросить слово наверх. */
+p,dd,li,figcaption,label{ text-wrap:pretty; }
+h1,h2,h3,.card__name,.row__title{ text-wrap:balance; }
+ul,ol{ list-style:none; padding:0; }
+a{ color:inherit; }
+
+/* ── ЖЁСТКОЕ ПРАВИЛО: ни одного скругления ── */
+*{ border-radius:0 !important; }
+
+/* Атрибут hidden должен побеждать раскладку. Ниже полно правил
+   вида display:grid/flex на элементах, которые скрипт прячет
+   через hidden, а авторский display перебивает стиль браузера. */
+[hidden]{ display:none !important; }
+
+/* ══════════════ 12-КОЛОНОЧНАЯ СЕТКА ══════════════ */
+.bay{
+  padding-inline:var(--margin);
+  display:grid; grid-template-columns:repeat(12,1fr); gap:var(--gutter);
+  position:relative;
+}
+@media (max-width:900px){ .bay{ grid-template-columns:repeat(6,1fr) } }
+
+/* ── Слой сетки (клавиша G) ── */
+.grid-overlay{
+  position:fixed; inset:0; z-index:9500; pointer-events:none;
+  padding-inline:var(--margin);
+  display:grid; grid-template-columns:repeat(12,1fr); gap:var(--gutter);
+  opacity:0; transition:opacity .3s var(--ease);
+}
+.grid-overlay.is-on{ opacity:1; }
+.grid-overlay i{ background:var(--ochre); opacity:.1; }
+@media (max-width:900px){ .grid-overlay{ grid-template-columns:repeat(6,1fr) } .grid-overlay i:nth-child(n+7){ display:none } }
+
+/* ══════════════ ПРЕЛОАДЕР ══════════════ */
+.preloader{
+  position:fixed; inset:0; z-index:9999;
+  background:var(--paper); color:var(--ink);
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:var(--margin) var(--margin) calc(var(--margin) * .75);
+  transition:opacity .6s var(--ease), visibility .6s var(--ease);
+}
+.preloader.is-done{ opacity:0; visibility:hidden; }
+.preloader.is-skipped{ display:none; }
+
+.preloader__logo{ color:var(--ink); width:clamp(130px,15vw,180px); }
+.preloader__logo svg{ width:100%; height:auto; }
+
+.preloader__caption{
+  font-family:var(--mono); font-size:var(--t-xs);
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-45); margin-bottom:.7rem;
+}
+.preloader__num{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(4.5rem,20vw,15rem); line-height:.76;
+  letter-spacing:-.06em; font-variant-numeric:tabular-nums;
+}
+.preloader__num sup{ font-size:.15em; vertical-align:super; color:var(--ochre); letter-spacing:0; }
+
+.preloader__bar{ position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--rule); }
+.preloader__bar i{ position:absolute; inset:0 auto 0 0; width:0; background:var(--ochre); }
+
+html.is-loading{ overflow:hidden; }
+
+/* ══════════════ ШАПКА ══════════════
+   Пять блоков в одном ряду — логотип с дескриптором, меню,
+   курс доллара, мессенджеры, телефон. Сетка из 12 колонок
+   на таком составе разъезжается, поэтому здесь flex.
+   ═══════════════════════════════════════════════════════ */
+.masthead{
+  position:sticky; top:0; z-index:800;
+  padding:.85rem var(--margin);
+  display:flex; align-items:center; gap:clamp(.8rem,2vw,2rem);
+  background:#ffffffee;
+  backdrop-filter:blur(16px) saturate(150%);
+  border-bottom:1px solid var(--rule-hard);
+}
+
+/* ── Логотип с дескриптором ──
+   Дескриптор уже логотипа, поэтому выключен по центру знака,
+   а не по левому краю: иначе строка висит со сдвигом влево.
+   Ширину задаём блоку, а не svg — тогда центрировать есть от чего. */
+.masthead__logo{
+  flex:0 0 auto; color:var(--ink); text-decoration:none;
+  display:flex; flex-direction:column; align-items:center;
+  width:clamp(112px,11vw,158px);
+}
+.masthead__logo svg{ width:100%; height:auto; }
+.masthead__descriptor{
+  display:block; margin-top:.34rem;
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-45); white-space:nowrap;
+  /* letter-spacing добавляет пробел после последней буквы —
+     без компенсации строка кажется смещённой влево */
+  text-indent:.2em;
+}
+
+/* ── Меню ── */
+.masthead__nav{
+  display:flex; align-items:center; gap:clamp(.9rem,2.2vw,2.2rem);
+  font-size:var(--t-sm); font-weight:500;
+  letter-spacing:.04em; text-transform:uppercase;
+  margin-right:auto;
+}
+.masthead__nav a{ text-decoration:none; position:relative; padding-block:.3rem; white-space:nowrap; }
+.masthead__nav a::after{
+  content:""; position:absolute; left:0; bottom:0; width:100%; height:2px;
+  background:var(--ochre); transform:scaleX(0); transform-origin:right;
+  transition:transform .4s var(--ease);
+}
+.masthead__nav a:hover::after,
+.masthead__nav a:focus-visible::after{ transform:scaleX(1); transform-origin:left; }
+/* текущий раздел подчёркнут постоянно */
+.masthead__nav a[aria-current="page"]::after{ transform:scaleX(1); transform-origin:left; }
+
+.masthead__actions{
+  flex:0 0 auto; display:flex; align-items:stretch; gap:.4rem;
+}
+
+/* ── Курс доллара ──
+   Моноширинный набор и tabular-nums: при обновлении курса
+   блок не должен дёргать соседние кнопки сменой ширины. */
+.fx{
+  flex:0 0 auto; align-self:center;
+  display:flex; flex-direction:column; align-items:flex-end;
+  padding-right:.75rem; margin-right:.2rem;
+  border-right:1px solid var(--rule);
+  line-height:1.15; white-space:nowrap;
+  font-family:var(--mono); font-variant-numeric:tabular-nums;
+}
+.fx__value{
+  font-size:var(--t-sm); font-weight:500; color:var(--ink);
+  letter-spacing:-.01em;
+}
+.fx__note{
+  font-size:var(--t-2xs); letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-45);
+}
+.fx.is-stale .fx__value{ color:var(--ink-45); }
+.fx.is-fresh .fx__value{ animation:fx-blink .9s var(--ease); }
+@keyframes fx-blink{ from{ color:var(--ochre) } to{ color:var(--ink) } }
+
+/* квадратные кнопки — тот же язык, что и остальные кнопки */
+.btn-icon{
+  width:3rem; flex:0 0 auto;
+  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  border:1px solid var(--ink); background:transparent; color:var(--ink);
+  position:relative; overflow:hidden; text-decoration:none;
+  font-family:var(--text); cursor:pointer; padding:0;
+  transition:color .35s var(--ease), border-color .35s var(--ease);
+}
+.btn-icon::before{
+  content:""; position:absolute; inset:0; background:var(--ochre);
+  transform:translateY(101%); transition:transform .42s var(--ease);
+}
+.btn-icon:hover::before,.btn-icon:focus-visible::before{ transform:translateY(0); }
+.btn-icon:hover,.btn-icon:focus-visible{ color:var(--paper); border-color:var(--ochre); }
+.btn-icon svg{ width:1.15rem; height:1.15rem; position:relative; z-index:1; fill:currentColor; flex:0 0 auto; }
+
+/* ── Телефон быстрого набора ── */
+.btn-icon--tel{
+  width:auto; padding-inline:.95rem;
+  background:var(--ink); color:var(--paper); border-color:var(--ink);
+}
+.btn-icon--tel .btn-icon__num{
+  position:relative; z-index:1;
+  font-family:var(--mono); font-size:var(--t-sm); font-weight:500;
+  letter-spacing:.01em; white-space:nowrap;
+}
+@media (max-width:1180px){
+  .btn-icon--tel{ width:3rem; padding-inline:0 }
+  .btn-icon--tel .btn-icon__num{ display:none }
+}
+
+/* ── Корзина ── */
+.btn-icon--cart{ position:relative; }
+.btn-icon--cart.is-filled{ border-color:var(--ochre); color:var(--ochre); }
+.btn-icon--cart.is-filled:hover,
+.btn-icon--cart.is-filled:focus-visible{ color:var(--paper); }
+.btn-icon__badge{
+  position:absolute; top:-1px; right:-1px; z-index:2;
+  min-width:1.15rem; height:1.15rem; padding:0 .22rem;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--ochre); color:var(--paper);
+  font-family:var(--mono); font-size:.625rem; line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.btn-icon__badge[hidden]{ display:none; }
+
+/* ── Бургер ── */
+.masthead__burger{
+  display:none; width:3rem; flex:0 0 auto;
+  align-items:center; justify-content:center;
+  border:1px solid var(--ink); background:transparent; color:var(--ink);
+  cursor:pointer; padding:0;
+}
+.masthead__burger i{
+  display:block; width:1.05rem; height:1px; background:currentColor;
+  position:relative; transition:background .2s var(--ease);
+}
+.masthead__burger i::before,
+.masthead__burger i::after{
+  content:""; position:absolute; left:0; width:100%; height:1px; background:currentColor;
+  transition:transform .35s var(--ease);
+}
+.masthead__burger i::before{ top:-6px; }
+.masthead__burger i::after{ top:6px; }
+.masthead__burger[aria-expanded="true"] i{ background:transparent; }
+.masthead__burger[aria-expanded="true"] i::before{ transform:translateY(6px) rotate(45deg); }
+.masthead__burger[aria-expanded="true"] i::after{ transform:translateY(-6px) rotate(-45deg); }
+
+@media (max-width:1024px){
+  .masthead{ flex-wrap:wrap; }
+  .masthead__nav{
+    order:3; width:100%; margin-right:0;
+    display:none; flex-direction:column; align-items:flex-start; gap:0;
+    border-top:1px solid var(--rule); margin-top:.85rem; padding-top:.35rem;
+  }
+  .masthead__nav.is-open{ display:flex; }
+  .masthead__nav a{ width:100%; padding-block:.85rem; border-bottom:1px solid var(--rule); }
+  .masthead__nav a::after{ display:none; }
+  .masthead__actions{ margin-left:auto; }
+  .masthead__burger{ display:inline-flex; }
+}
+@media (max-width:560px){
+  .masthead{ padding-inline:var(--margin); gap:.6rem }
+  .masthead__logo svg{ width:104px }
+  .masthead__descriptor{ font-size:.625rem; letter-spacing:.14em }
+  .fx{ padding-right:.55rem }
+  .btn-icon{ width:2.6rem }
+  .masthead__burger{ width:2.6rem }
+  /* МАКС уходит — на узкой шапке хватает Telegram, телефона и бургера,
+     оба канала всё равно есть в панели приветствия */
+  .btn-icon--max{ display:none }
+}
+
+/* ══════════════ КНОПКИ ══════════════ */
+.btn{
+  --bg:var(--ink); --fg:var(--paper); --bd:var(--ink);
+  appearance:none; border:1px solid var(--bd);
+  background:var(--bg); color:var(--fg);
+  font-family:var(--text); font-weight:600;
+  font-size:var(--t-sm); letter-spacing:.05em; text-transform:uppercase;
+  padding:.95rem 1.6rem; cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; justify-content:center; gap:.6rem;
+  position:relative; overflow:hidden; text-align:center;
+  transition:color .35s var(--ease), border-color .35s var(--ease);
+}
+.btn > span{ position:relative; z-index:1; }
+.btn::before{
+  content:""; position:absolute; inset:0; background:var(--ochre);
+  transform:translateY(101%); transition:transform .42s var(--ease);
+}
+.btn:hover::before,.btn:focus-visible::before{ transform:translateY(0); }
+.btn:hover,.btn:focus-visible{ color:var(--paper); border-color:var(--ochre); }
+.btn--ochre{ --bg:var(--ochre); --bd:var(--ochre); }
+.btn--ochre::before{ background:var(--ink); }
+.btn--ochre:hover,.btn--ochre:focus-visible{ border-color:var(--ink); }
+.btn--ghost{ --bg:transparent; --fg:var(--ink); }
+.btn--wide{ width:100%; }
+.btn--sm{ padding:.72rem 1rem; font-size:var(--t-2xs); }
+
+/* ══════════════ ЗАГОЛОВОК СЕКЦИИ ══════════════ */
+.rule{
+  grid-column:1 / 13;
+  border-top:1px solid var(--rule-hard);
+  padding-top:.65rem; margin-bottom:clamp(1.8rem,5vh,3.4rem);
+  display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
+  font-family:var(--mono); font-size:var(--t-xs);
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-45);
+}
+.rule b{ color:var(--ink); font-weight:500; }
+@media (max-width:900px){ .rule{ grid-column:1 / 7 } }
+
+/* ══════════════ МОДАЛЬНОЕ ОКНО ══════════════ */
+.modal{
+  border:1px solid var(--rule-hard); background:var(--paper); color:var(--ink);
+  padding:0; width:min(30rem, calc(100vw - 2rem));
+  box-shadow:16px 16px 0 var(--ink);
+}
+.modal::backdrop{ background:#11101099; backdrop-filter:blur(3px); }
+.modal__inner{ padding:clamp(1.4rem,3.5vw,2.2rem); display:flex; flex-direction:column; gap:1rem; }
+.modal__kicker{
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ochre);
+}
+.modal__title{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(1.35rem,3vw,1.9rem); line-height:1.05; letter-spacing:-.04em;
+}
+.modal__text{ font-size:var(--t-sm); line-height:1.55; color:var(--ink-70); }
+.modal__subject{
+  font-family:var(--mono); font-size:var(--t-xs); color:var(--ink);
+  border-left:2px solid var(--ochre); padding-left:.7rem;
+}
+.modal__subject[hidden]{ display:none; }
+.modal__close{
+  position:absolute; top:.55rem; right:.55rem;
+  width:2.4rem; height:2.4rem; display:inline-flex; align-items:center; justify-content:center;
+  border:0; background:transparent; color:var(--ink-45); cursor:pointer;
+  font-size:1.4rem; line-height:1; transition:color .3s var(--ease);
+}
+.modal__close:hover{ color:var(--ink); }
+
+/* Поля модалки — светлые: форма заказа на главной стоит на чёрном
+   и красит поля в белый, здесь фон бумажный. */
+.modal form{ display:flex; flex-direction:column; gap:.9rem; }
+.modal .mfield{ display:flex; flex-direction:column; gap:.35rem; }
+.modal .mfield label{
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.11em; text-transform:uppercase; color:var(--ink-45);
+}
+.modal .mfield label span{ color:var(--ochre); }
+/* пометка необязательного поля — тише, чем звёздочка обязательного */
+.modal .mfield label .mfield__opt{
+  color:var(--ink-25); letter-spacing:.04em; text-transform:none;
+}
+.modal .mfield input{
+  appearance:none; width:100%; background:transparent; color:var(--ink);
+  border:0; border-bottom:1px solid var(--ink-25);
+  font-family:var(--text); font-size:var(--t-base); padding:.6rem 0;
+  transition:border-color .3s var(--ease);
+}
+.modal .mfield input:focus{ outline:0; border-bottom-color:var(--ochre); }
+.modal .mfield input::placeholder{ color:var(--ink-25); }
+.modal .mfield.is-bad input{ border-bottom-color:#C0392B; }
+
+.modal__agree{
+  display:flex; align-items:flex-start; gap:.6rem;
+  font-size:var(--t-xs); line-height:1.5; color:var(--ink-70); cursor:pointer;
+}
+.modal__agree input{
+  appearance:none; width:1.05rem; height:1.05rem; flex:0 0 auto; margin-top:.15rem;
+  border:1px solid var(--ink-25); background:transparent; cursor:pointer;
+  transition:background .25s var(--ease), border-color .25s var(--ease);
+}
+.modal__agree input:checked{ background:var(--ochre); border-color:var(--ochre); }
+.modal__agree.is-bad input{ border-color:#C0392B; }
+.modal__agree a{ color:var(--ochre); }
+
+.modal__status{
+  border:1px solid var(--ochre); background:var(--ochre-dim);
+  padding:.9rem 1.05rem; font-size:var(--t-sm); line-height:1.5; display:none;
+}
+.modal__status.is-on{ display:block; }
+.modal.is-sent form{ display:none; }
+
+/* ══════════════ СОГЛАСИЕ НА COOKIE ══════════════ */
+.cookies{
+  position:fixed; z-index:9000;
+  left:var(--margin); bottom:var(--margin);
+  width:min(400px, calc(100vw - var(--margin) * 2));
+  background:var(--paper); color:var(--ink);
+  border:1px solid var(--rule-hard);
+  box-shadow:12px 12px 0 var(--ink);
+  padding:1.35rem;
+  display:flex; flex-direction:column; gap:.85rem;
+  /* уезжает вниз за край экрана вместе с собственной тенью */
+  transform:translateY(calc(100% + var(--margin) + 14px));
+  opacity:0;
+  transition:transform .75s var(--ease), opacity .5s var(--ease);
+}
+.cookies.is-in{ transform:none; opacity:1; }
+.cookies[hidden]{ display:none; }
+.cookies__title{
+  font-family:var(--display); font-weight:600;
+  font-size:1.02rem; letter-spacing:-.025em;
+}
+.cookies__text{ font-size:var(--t-sm); line-height:1.55; color:var(--ink-70); }
+.cookies__actions{ display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.15rem; }
+.cookies__actions .btn{ flex:1 1 auto; padding:.72rem 1rem; font-size:var(--t-2xs); }
+@media (max-width:560px){
+  .cookies{
+    left:0; right:0; bottom:0; width:auto;
+    border-left:0; border-right:0; border-bottom:0; box-shadow:none;
+    transform:translateY(105%);
+  }
+}
+
+/* ══════════════ СЕРТИФИКАТЫ ══════════════ */
+.certs{
+  grid-column:1 / 13;
+  border-bottom:1px solid var(--rule);
+  padding-bottom:clamp(1.6rem,4vh,2.6rem);
+  margin-bottom:clamp(1.8rem,4vh,2.8rem);
+}
+.certs__label{
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-45);
+  margin-bottom:1.4rem;
+}
+.certs__row{
+  display:flex; flex-wrap:wrap; align-items:center;
+  gap:clamp(1.5rem,4vw,3.4rem);
+}
+.certs__row img{
+  /* Высота задана явно, а не auto: у большинства файлов нет
+     атрибутов width/height, только viewBox. При height:auto
+     браузеру не от чего считать размер и картинка схлопывается. */
+  height:clamp(40px,4.4vw,54px);
+  width:auto; max-width:150px;
+  object-fit:contain;
+  filter:grayscale(1) brightness(0); opacity:.42;
+  transition:filter .4s var(--ease), opacity .4s var(--ease);
+}
+.certs__row li:hover img,
+.certs__row a:focus-visible img{ filter:none; opacity:1; }
+@media (max-width:900px){
+  .certs{ grid-column:1 / 7 }
+  .certs__row img{ height:38px; max-width:112px }
+}
+
+/* ══════════════ ПОДВАЛ ══════════════ */
+.colophon{
+  padding-block:clamp(2.5rem,6vh,4rem) 2rem;
+  border-top:1px solid var(--rule-hard); align-items:end;
+}
+.colophon__logo{ grid-column:1 / 4; }
+.colophon__logo svg{ width:clamp(110px,11vw,150px); height:auto; }
+.colophon p{ grid-column:6 / 9; font-size:var(--t-xs); color:var(--ink-45); line-height:1.9; }
+.colophon a{ color:var(--ink-70); }
+.colophon a:hover{ color:var(--ochre); }
+.colophon .fine{ grid-column:11 / 13; text-align:right; font-family:var(--mono); font-size:var(--t-2xs); color:var(--ink-25); }
+@media (max-width:900px){
+  .colophon__logo,.colophon p,.colophon .fine{ grid-column:1 / 7; text-align:left }
+  .colophon p,.colophon .fine{ margin-top:1.4rem }
+}
+
+/* ══════════════ РАЗРЕЗАЕМЫЕ ЛИНИИ ══════════════ */
+.is-cutting{ position:relative; }
+.cutline{
+  position:absolute; left:0; width:100%; height:60px;
+  overflow:visible; pointer-events:none; z-index:6;
+}
+
+/* ══════════════ ДВИЖЕНИЕ ══════════════ */
+.rise{
+  opacity:0; transform:translateY(24px);
+  transition:opacity .8s var(--ease), transform .8s var(--ease);
+  transition-delay:var(--d,0ms);
+}
+.rise.is-in{ opacity:1; transform:none; }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+  html{ scroll-behavior:auto }
+  .rise{ opacity:1; transform:none }
+  .ticker ul{ animation:none }
+  /* Лента изделий тоже замирает: полоса, ползущая сама по себе,
+     для этой настройки — ровно то, от чего человек отказался.
+     Кадры остаются на месте, их можно листать колесом. */
+  .clothes__track{ animation:none }
+  .clothes__strip{ overflow-x:auto }
+}
+
+/* ══════════════ КУРСОР-НОЖНИЦЫ ══════════════ */
+.cursor{ display:none; }
+
+@media (pointer:fine){
+  html.has-cursor,
+  html.has-cursor *{ cursor:none !important; }
+
+  /* Поля и списки — исключение. Нативный <select> раскрывается
+     средствами системы поверх страницы, и наши ножницы туда
+     не дотягиваются: получалось, что курсора нет вообще.
+     Здесь возвращаем системный, а ножницы прячет скрипт. */
+  html.has-cursor select,
+  html.has-cursor option,
+  html.has-cursor input,
+  html.has-cursor textarea{ cursor:revert !important; }
+  html.has-cursor select{ cursor:pointer !important; }
+
+  /* То же самое с модалкой: <dialog> открывается в top layer,
+     а он лежит выше любого z-index — ножницы оказываются под ним.
+     Пока окно открыто, работает системный курсор. */
+  html.has-cursor.is-modal,
+  html.has-cursor.is-modal *{ cursor:revert !important; }
+  html.has-cursor.is-modal a,
+  html.has-cursor.is-modal button,
+  html.has-cursor.is-modal label,
+  html.has-cursor.is-modal select{ cursor:pointer !important; }
+  html.is-modal .cursor{ opacity:0; }
+
+  .cursor{
+    display:block;
+    position:fixed; top:0; left:0; z-index:10000;
+    width:34px; height:34px; margin:-17px 0 0 -17px;
+    pointer-events:none; color:var(--ink);
+    transform:translate3d(-120px,-120px,0);
+    transition:opacity .25s var(--ease);
+  }
+  /* наклон живёт на внутреннем svg: на самом .cursor его нельзя —
+     там лежит transform позиционирования, который пишет скрипт */
+  .cursor svg{
+    display:block; width:100%; height:100%; overflow:visible;
+    transform:rotate(-32deg);
+  }
+  .cursor__blade{
+    transform-origin:16px 19px;
+    transition:transform .14s cubic-bezier(.34,1.56,.64,1);
+  }
+  .cursor.is-cut .cursor__blade--a{ transform:rotate(11deg); }
+  .cursor.is-cut .cursor__blade--b{ transform:rotate(-11deg); }
+  .cursor.is-light{ color:var(--paper); }
+  .cursor.is-hidden{ opacity:0; }
+
+  .cursor__blade path,
+  .cursor__blade circle{
+    stroke-dasharray:1; stroke-dashoffset:1;
+    transition:stroke-dashoffset .85s var(--ease);
+  }
+  .cursor.is-drawn .cursor__blade path,
+  .cursor.is-drawn .cursor__blade circle{ stroke-dashoffset:0; }
+  .cursor__blade--b path,
+  .cursor__blade--b circle{ transition-delay:.14s; }
+  .cursor__blade circle{ transition-delay:.34s; }
+  .cursor__blade--b circle{ transition-delay:.46s; }
+
+  .cursor svg > circle{
+    opacity:0; transform:scale(0); transform-origin:16px 19px;
+    transition:opacity .3s var(--ease) .8s, transform .4s var(--ease) .8s;
+  }
+  .cursor.is-drawn svg > circle{ opacity:1; transform:none; }
+}
+
+::selection{ background:var(--ochre); color:var(--paper); }
+:focus-visible{ outline:2px solid var(--ochre); outline-offset:3px; }
+.skip{
+  position:absolute; left:var(--margin); top:-5rem; z-index:1000;
+  background:var(--ink); color:var(--paper); padding:.85rem 1.3rem;
+  font-size:var(--t-sm); text-decoration:none; transition:top .3s var(--ease);
+}
+.skip:focus{ top:1rem; }
+.vh{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+/* ══════════════ ЧТО ШЬЮТ ИЗ НАШЕГО ПОЛОТНА ══════════════
+   Раздел витринный: показывает применение ткани, но не продаёт
+   изделия. Пометка об этом обязательна — иначе пойдут запросы
+   цен на готовую одежду (ТЗ 5.3). */
+/* Снизу отступ короче: лента идёт сразу за текстом и добирает
+   воздух собственными полями. */
+.clothes{ padding-block:var(--bay) clamp(1.4rem,4vh,2.4rem); }
+.clothes__intro{ grid-column:1 / 5; }
+.clothes__intro h2{
+  font-family:var(--display); font-weight:600;
+  font-size:var(--t-md); line-height:1.1; letter-spacing:-.03em; margin-bottom:.9rem;
+}
+.clothes__intro p{ font-size:var(--t-sm); color:var(--ink-70); max-width:32ch; }
+.clothes__note{
+  margin-top:1.1rem; border-left:2px solid var(--ochre); padding-left:.8rem;
+  font-size:var(--t-xs); color:var(--ink-45);
+}
+.clothes__shot{
+  aspect-ratio:3/4; background:var(--shade);
+  box-shadow:inset 0 0 0 1px var(--rule);
+  display:grid; place-items:center;
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.08em; text-transform:uppercase; color:var(--ink-25);
+}
+.clothes__shot img{ width:100%; height:100%; object-fit:cover; display:block; }
+.clothes__cap{ font-size:var(--t-2xs); color:var(--ink-45); }
+@media (max-width:900px){
+  .clothes__intro{ grid-column:1 / 7; margin-bottom:2.2rem }
+}
+
+/* ══════════════ ЦВЕТОВАЯ КАРТА ══════════════
+   Вёрстка перенесена из итерации 2 без изменений (ТЗ 3.3). */
+.colors{ padding-block:var(--bay); border-top:1px solid var(--rule-hard); }
+/* Лента уже закрыта своей нижней линией — вторая рядом лишняя */
+.clothes__strip + .colors{ border-top:0; }
+.colors__intro{ grid-column:1 / 4; }
+.colors__intro h2{
+  font-family:var(--display); font-weight:600;
+  font-size:var(--t-md); line-height:1.1; letter-spacing:-.03em; margin-bottom:.9rem;
+}
+.colors__intro p{ font-size:var(--t-sm); color:var(--ink-70); max-width:30ch; }
+.colors__intro .warn{
+  margin-top:1.1rem; border-left:2px solid var(--ochre); padding-left:.8rem;
+  font-size:var(--t-xs); color:var(--ink-45);
+}
+
+.swatches{
+  grid-column:5 / 13;
+  display:grid; grid-template-columns:repeat(7,1fr); gap:var(--gutter);
+}
+@media (max-width:1280px){ .swatches{ grid-template-columns:repeat(6,1fr) } }
+@media (max-width:900px){
+  .colors__intro{ grid-column:1 / 7; margin-bottom:2.2rem }
+  .swatches{ grid-column:1 / 7; grid-template-columns:repeat(4,1fr) }
+}
+@media (max-width:520px){ .swatches{ grid-template-columns:repeat(3,1fr) } }
+
+.swatch{
+  appearance:none; border:0; padding:0; background:none;
+  cursor:pointer; text-align:left; font-family:inherit;
+  display:flex; flex-direction:column; gap:.45rem;
+}
+.swatch i{
+  display:block; aspect-ratio:1/1; width:100%;
+  background:var(--c);
+  box-shadow:inset 0 0 0 1px var(--rule);
+  position:relative;
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+/* галочка выбора — квадратная, охра */
+.swatch i::before{
+  content:""; position:absolute; z-index:2;
+  right:0; top:0; width:0; height:0;
+  border-style:solid; border-width:0 0 1.15rem 1.15rem;
+  border-color:transparent transparent var(--ochre) transparent;
+  transform:scale(0); transform-origin:bottom right;
+  transition:transform .28s var(--ease);
+}
+.swatch[aria-pressed="true"] i::before{ transform:scale(1); }
+.swatch[aria-pressed="true"] i{ box-shadow:inset 0 0 0 2px var(--ink); transform:scale(.94); }
+.swatch:hover i{ transform:scale(.94); }
+.swatch:focus-visible i{ outline:2px solid var(--ochre); outline-offset:3px; }
+.swatch em{
+  font-family:var(--mono); font-size:var(--t-2xs); font-style:normal;
+  letter-spacing:.04em; color:var(--ink);
+}
+.swatch b{ font-size:var(--t-2xs); font-weight:500; line-height:1.25; color:var(--ink-45); }
+
+.colors__bar{
+  grid-column:5 / 13; margin-top:clamp(1.6rem,4vh,2.6rem);
+  border-top:1px solid var(--rule-hard); padding-top:1rem;
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem;
+}
+.colors__bar p{ font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-45); }
+.colors__bar p b{ color:var(--ink); font-weight:500; }
+@media (max-width:900px){ .colors__bar{ grid-column:1 / 7 } }
+/* ══════════════ ВЫБОР ПОЛОТНА ПОД ЦВЕТ ══════════════
+   Открывается кликом по оттенку в цветовой карте. Цвет к ткани
+   не привязан, поэтому сначала спрашиваем полотно, а потом уводим
+   в его карточку с уже выбранным номером. */
+.pick__list{
+  margin-top:1.1rem; max-height:52vh; overflow-y:auto;
+  display:flex; flex-direction:column; gap:1.1rem;
+}
+.pick__group{ display:flex; flex-direction:column; gap:.2rem; }
+.pick__type{
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-45); margin-bottom:.25rem;
+}
+.pick__item{
+  display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
+  padding:.55rem .7rem; text-decoration:none; color:var(--ink);
+  font-size:var(--t-sm); border:1px solid transparent;
+  transition:border-color .2s var(--ease), background .2s var(--ease);
+}
+.pick__item span{ font-family:var(--mono); font-size:var(--t-2xs); color:var(--ink-45); white-space:nowrap; }
+.pick__item:hover,
+.pick__item:focus-visible{ border-color:var(--ochre); background:var(--ochre-dim); }
+.pick__fail{ font-size:var(--t-sm); color:var(--ink-70); margin-top:1rem; }
+
+/* Кружок выбранного цвета в шапке диалога */
+#pick-code{ font-family:var(--mono); color:var(--ink); }
+/* ── Лента изделий ──
+   Во всю ширину экрана, поэтому живёт вне сетки .bay.
+   Шаг --step и длительность --dur ставит скрипт: он меряет
+   фактическую ширину одного набора и доклеивает копии, пока
+   ленты не хватит на экран плюс шаг. */
+.clothes__strip{
+  overflow:hidden;
+  border-block:1px solid var(--rule-hard);
+  padding-block:clamp(1.2rem,3vh,2rem);
+}
+.clothes__track{
+  display:flex; width:max-content; margin:0; padding:0; list-style:none;
+  animation:slide var(--dur,70s) linear infinite;
+}
+/* Пауза при наведении: на ходу кадр не рассмотреть */
+.clothes__strip:hover .clothes__track,
+.clothes__strip:focus-within .clothes__track{ animation-play-state:paused; }
+
+.clothes__track li{
+  flex:0 0 auto;
+  width:clamp(15rem, 22vw, 22rem);
+  padding-right:var(--gutter);
+  display:flex; flex-direction:column; gap:.6rem;
+}
+.clothes__shot{
+  aspect-ratio:3/4; background:var(--shade);
+  box-shadow:inset 0 0 0 1px var(--rule);
+  display:grid; place-items:center;
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.08em; text-transform:uppercase; color:var(--ink-25);
+}
+.clothes__shot img{ width:100%; height:100%; object-fit:cover; display:block; }
+.clothes__cap{ font-size:var(--t-2xs); color:var(--ink-45); }
+
+/* Блок с текстом перестал делить строку с плитками — тексту
+   можно отдать нормальную колонку, а не четверть сетки. */
+.clothes__intro{ grid-column:1 / 7; }
+@media (max-width:900px){ .clothes__intro{ grid-column:1 / 7 } }

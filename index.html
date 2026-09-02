@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>САЛТЕКС — оптовая продажа трикотажных тканей</title>
+<meta name="description" content="САЛТЕКС — оптовые поставки трикотажного полотна с собственных фабрик в Турции с 1999 года. Кулирка, футер, кашкорсе, рибана. Склад в Москве, без посредников.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#111010">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Общий слой (токены, шапка, кнопки, модалка, подвал) и сетка карточек -->
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/catalog.css">
+<style>
+/* ══════════════════════════════════════════════════════
+   САЛТЕКС — стили только этой страницы.
+   Общее для всех страниц лежит в assets/css/site.css,
+   каталог и карточка товара — в assets/css/catalog.css.
+   ══════════════════════════════════════════════════════ */
+
+
+
+
+
+
+
+
+
+/* ══════════════ ГЕРОЙ ══════════════ */
+.hero{
+  position:relative; isolation:isolate;
+  min-height:clamp(540px,84vh,880px);
+  align-content:center;
+  padding-block:clamp(3rem,8vh,6rem);
+}
+
+/* видео выходит за поля страницы до самых краёв экрана */
+.hero__video{
+  position:absolute; z-index:0;
+  top:0; bottom:0;
+  left:calc(var(--margin) * -1); right:calc(var(--margin) * -1);
+  overflow:hidden; background:var(--shade);
+}
+.hero__video video,
+.hero__video img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* вуаль плотная слева под текстом и почти прозрачная справа —
+   так видео остаётся видимым, а типографика не теряет контраст */
+.hero__video::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(100deg,
+    #ffffffef 0%, #ffffffe8 34%, #ffffffb0 62%, #ffffff85 100%);
+}
+
+.hero__text{
+  grid-column:1 / 7; grid-row:1; z-index:1;
+  display:flex; flex-direction:column; gap:clamp(1.4rem,3.6vh,2.4rem);
+}
+
+/* ── Быстрая связь ── */
+.quick{
+  grid-column:8 / 13; grid-row:1; z-index:2; align-self:center;
+  background:var(--paper); border:1px solid var(--rule-hard);
+  box-shadow:14px 14px 0 var(--ink);
+  padding:clamp(1.3rem,2vw,1.9rem);
+  display:flex; flex-direction:column; gap:.85rem;
+}
+/* выезд сбоку вместо общего подъёма снизу */
+.quick.rise{ transform:translate3d(48px,0,0); }
+.quick.rise.is-in{ transform:none; }
+
+.quick__kicker{
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ochre);
+}
+.quick__title{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(1.1rem,1.5vw,1.45rem); line-height:1.14; letter-spacing:-.03em;
+}
+.quick__title em{ font-style:normal; color:var(--ochre); }
+.quick__sub{ font-size:var(--t-sm); line-height:1.5; color:var(--ink-70); }
+.quick .btn{ width:100%; }
+.quick__fine{ font-size:var(--t-2xs); color:var(--ink-45); line-height:1.5; }
+
+.hero h1{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(2.3rem,5vw,4.9rem); line-height:.9; letter-spacing:-.045em;
+  text-wrap:balance;
+}
+.hero h1 .shift{ display:block; padding-left:9%; }
+.hero h1 em{ font-style:normal; color:var(--ochre); font-weight:400; }
+.hero__lede{ font-size:var(--t-md); line-height:1.4; letter-spacing:-.015em; max-width:34ch; }
+.hero__meta{
+  border-top:1px solid var(--rule-hard); padding-top:.85rem;
+  font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-70); line-height:2;
+}
+.hero__actions{ display:flex; flex-wrap:wrap; gap:.6rem; }
+
+@media (max-width:1100px){
+  .hero__text{ grid-column:1 / 8 }
+  .quick{ grid-column:8 / 13 }
+}
+@media (max-width:900px){
+  .hero{ min-height:auto; padding-block:clamp(2.5rem,7vh,4rem) var(--bay) }
+  .hero__text{ grid-column:1 / 7 }
+  .hero h1 .shift{ padding-left:0 }
+  /* на узком экране вуаль сплошная: текст занимает всю ширину */
+  .hero__video::after{ background:#ffffffe6 }
+  .quick{
+    grid-column:1 / 7; grid-row:2; align-self:start;
+    margin-top:2.4rem; box-shadow:9px 9px 0 var(--ink);
+  }
+  .quick.rise{ transform:translate3d(0,24px,0) }
+}
+
+/* ══════════════ ПРЕИМУЩЕСТВА ══════════════ */
+.perks{ padding-block:var(--bay); }
+.perks__grid{
+  grid-column:1 / 13;
+  display:grid; grid-template-columns:repeat(5,1fr); gap:var(--gutter);
+}
+@media (max-width:1180px){ .perks__grid{ grid-template-columns:repeat(3,1fr); gap:2.4rem var(--gutter) } }
+@media (max-width:900px){ .perks__grid{ grid-column:1 / 7; grid-template-columns:repeat(2,1fr) } }
+@media (max-width:480px){ .perks__grid{ grid-template-columns:1fr } }
+
+.perk{
+  border-top:1px solid var(--rule-hard); padding-top:1.15rem;
+  display:flex; flex-direction:column; gap:.95rem;
+}
+/* Класс, а не «.perk svg»: иначе правила накрывают и накладной
+   svg разреза — навязывают ему размер иконки и пунктир анимации. */
+.perk__ico{
+  width:42px; height:42px; flex:0 0 auto;
+  fill:none; stroke:var(--ink); stroke-width:1.3;
+  stroke-linecap:round; stroke-linejoin:round;
+  transition:stroke .35s var(--ease);
+}
+.perk:hover .perk__ico{ stroke:var(--ochre); }
+.perk p{ font-size:var(--t-sm); line-height:1.5; color:var(--ink-70); }
+.perk b{ color:var(--ink); font-weight:600; }
+
+/* Штрих вычерчивается на глазах. pathLength="1" на каждой фигуре
+   нормирует её длину к единице, поэтому одни и те же значения
+   dasharray работают для любой геометрии — измерять пути в JS не нужно. */
+.perk__ico > *{
+  stroke-dasharray:1; stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.05s var(--ease);
+}
+.perk.is-in .perk__ico > *{ stroke-dashoffset:0; }
+.perk__ico > *:nth-child(2){ transition-delay:.16s; }
+.perk__ico > *:nth-child(3){ transition-delay:.32s; }
+
+/* ── бегущая строка-ассортимент ── */
+.ticker{
+  border-block:1px solid var(--rule-hard);
+  background:var(--ink); color:var(--paper);
+  overflow:hidden; padding-block:.7rem;
+}
+/* Отступ живёт на самих элементах, а не в gap контейнера.
+   При flex-gap промежутков на один меньше, чем элементов, поэтому
+   сдвиг на −50% не попадает в начало второго набора и на стыке
+   виден рывок. С padding-right половина ленты равна ровно 50%.
+
+   Шаг цикла --step и длительность --dur ставит скрипт: он меряет
+   фактическую ширину одного набора и сдвигает ленту ровно на неё,
+   а не на половину всей полосы. Процент считается от width:max-content,
+   и достаточно доли пикселя расхождения, чтобы на стыке был рывок.
+   Значения в var() — запасные, на случай отключённого скрипта. */
+.ticker ul{ display:flex; width:max-content; animation:slide var(--dur,88s) linear infinite; }
+.ticker li{
+  font-family:var(--mono); font-size:var(--t-xs);
+  letter-spacing:.14em; text-transform:uppercase; white-space:nowrap;
+  display:flex; align-items:center; gap:2.5rem;
+  padding-right:2.5rem;
+}
+.ticker li::after{ content:""; width:5px; height:5px; background:var(--ochre); flex:0 0 auto; }
+@keyframes slide{ from{transform:translateX(0)} to{transform:translateX(calc(-1 * var(--step,50%)))} }
+
+/* ══════════════ ПРОЦЕСС СОТРУДНИЧЕСТВА ══════════════
+   Лента времени: этапы стоят попеременно над и под линией.
+   Сетка из трёх рядов — верхние карточки, сама линия, нижние
+   карточки. Линия оформлена псевдоэлементом контейнера: у
+   grid-контейнера ::before становится полноценным элементом сетки.
+   ══════════════════════════════════════════════════════ */
+.process{ padding-block:var(--bay); }
+.flow{
+  grid-column:1 / 13; position:relative;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:1fr 1px 1fr;
+  column-gap:var(--gutter);
+  min-height:clamp(300px,29vw,400px);
+}
+/* блок не двигается сам — класс rise нужен ему только ради is-in */
+.flow.rise{ opacity:1; transform:none; }
+.flow::before{
+  content:""; grid-column:1 / -1; grid-row:2;
+  background:var(--rule-hard);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform 1s var(--ease);
+}
+.flow.is-in::before{ transform:scaleX(1); }
+
+.flow__step{ position:relative; display:flex; padding-left:1.2rem; }
+.flow__step:nth-child(1){ grid-column:1; grid-row:1; align-items:flex-end; padding-bottom:2.6rem; }
+.flow__step:nth-child(2){ grid-column:2; grid-row:3; align-items:flex-start; padding-top:2.6rem; }
+.flow__step:nth-child(3){ grid-column:3; grid-row:1; align-items:flex-end; padding-bottom:2.6rem; }
+.flow__step:nth-child(4){ grid-column:4; grid-row:3; align-items:flex-start; padding-top:2.6rem; }
+
+/* вертикальный поводок от карточки к линии */
+.flow__step::after{
+  content:""; position:absolute; left:0; width:1px;
+  height:2.6rem; background:var(--ink-25);
+}
+.flow__step:nth-child(odd)::after{ bottom:0; }
+.flow__step:nth-child(even)::after{ top:0; }
+
+/* охряная точка на линии */
+.flow__step::before{
+  content:""; position:absolute; left:-4px; z-index:2;
+  width:9px; height:9px; background:var(--ochre);
+}
+.flow__step:nth-child(odd)::before{ bottom:-4px; }
+.flow__step:nth-child(even)::before{ top:-4px; }
+
+.flow__no{
+  font-family:var(--mono); font-size:var(--t-xs);
+  letter-spacing:.12em; color:var(--ochre); margin-bottom:.45rem;
+}
+.flow__title{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(1.02rem,1.4vw,1.35rem);
+  line-height:1.1; letter-spacing:-.03em; margin-bottom:.5rem;
+}
+.flow__text{ font-size:var(--t-sm); line-height:1.55; color:var(--ink-70); max-width:27ch; }
+
+@media (max-width:900px){
+  .flow{
+    grid-column:1 / 7;
+    grid-template-columns:1fr; grid-template-rows:none;
+    min-height:0; row-gap:2.2rem; padding-left:1.5rem;
+  }
+  /* на узком экране лента разворачивается в вертикальную */
+  .flow::before{
+    position:absolute; left:0; top:.4rem; bottom:.4rem;
+    width:1px; height:auto;
+    transform:scaleY(0); transform-origin:top;
+  }
+  .flow.is-in::before{ transform:scaleY(1); }
+  .flow__step:nth-child(n){
+    grid-column:1; grid-row:auto;
+    align-items:flex-start; padding:0 0 0 1.5rem;
+  }
+  .flow__step:nth-child(n)::after{ display:none; }
+  .flow__step:nth-child(n)::before{ top:.4rem; bottom:auto; left:-1.5rem; }
+}
+
+/* ══════════════ ТИЗЕР КАТАЛОГА ══════════════
+   Сетка карточек приезжает из assets/css/catalog.css,
+   здесь остаётся только отступ секции и блок подбора. */
+.catalog{ padding-block:var(--bay); }
+
+/* ── Персональный подбор ── */
+.offer{
+  grid-column:1 / 13; margin-top:clamp(2rem,5vh,3.4rem);
+  background:var(--ink); color:var(--paper);
+  padding:clamp(1.8rem,4vw,3.2rem);
+  display:grid; grid-template-columns:minmax(0,1fr) auto;
+  gap:clamp(1.6rem,4vw,3rem); align-items:end;
+}
+.offer__label{
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ochre);
+  margin-bottom:.9rem;
+}
+.offer__title{
+  font-family:var(--display); font-weight:600;
+  font-size:var(--t-lg); line-height:1; letter-spacing:-.04em;
+  margin-bottom:.9rem;
+}
+.offer__text{ font-size:var(--t-sm); line-height:1.6; color:#ffffffad; max-width:58ch; }
+.offer__actions{ display:flex; flex-direction:column; gap:.5rem; }
+.offer__actions .btn{ --bg:var(--ochre); --bd:var(--ochre); white-space:nowrap; }
+.offer__actions .btn::before{ background:var(--paper); }
+.offer__actions .btn:hover,.offer__actions .btn:focus-visible{ color:var(--ink); border-color:var(--paper); }
+.offer__actions .btn--ghost{ --bg:transparent; --fg:var(--paper); --bd:#ffffff45; }
+@media (max-width:900px){
+  .offer{ grid-column:1 / 7; grid-template-columns:1fr; align-items:start }
+}
+
+/* ══════════════ О КОМПАНИИ ══════════════ */
+.about{ padding-block:var(--bay); background:var(--shade); }
+.about__lead{
+  grid-column:1 / 6;
+  font-family:var(--display); font-weight:500;
+  font-size:var(--t-lg); line-height:1.05; letter-spacing:-.035em;
+}
+.about__lead em{ font-style:normal; color:var(--ochre); }
+.about__text{ grid-column:7 / 13; display:grid; gap:1.1rem; font-size:var(--t-base); color:var(--ink-70); max-width:56ch; }
+.about__text strong{ color:var(--ink); font-weight:600; }
+@media (max-width:900px){
+  .about__lead{ grid-column:1 / 7; margin-bottom:2rem }
+  .about__text{ grid-column:1 / 7 }
+}
+
+.figures{ grid-column:1 / 13; display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gutter); margin-top:clamp(3rem,8vh,5.5rem); }
+.figures > div{ border-top:1px solid var(--rule-hard); padding-top:.9rem; }
+.figures dt{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(1.9rem,4.4vw,3.6rem); line-height:.92; letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums;
+}
+.figures dt sup{ font-size:.32em; vertical-align:super; color:var(--ochre); }
+.figures dd{ margin-top:.6rem; font-size:var(--t-sm); color:var(--ink-70); max-width:24ch; }
+@media (max-width:900px){ .figures{ grid-column:1 / 7; grid-template-columns:repeat(2,1fr); gap:2rem var(--gutter) } }
+
+/* ══════════════ КОНТАКТЫ ══════════════ */
+.contacts{ padding-block:var(--bay); }
+.contacts__list{ grid-column:1 / 8; display:grid; grid-template-columns:repeat(2,1fr); gap:2.4rem var(--gutter); }
+.contacts__list > div{ border-top:1px solid var(--rule-hard); padding-top:.9rem; }
+.contacts dt{
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-45); margin-bottom:.5rem;
+}
+.contacts dd a,.contacts dd{
+  font-family:var(--display); font-weight:500;
+  font-size:clamp(1rem,1.7vw,1.35rem); line-height:1.25; letter-spacing:-.03em;
+  text-decoration:none;
+}
+.contacts dd a{ border-bottom:2px solid var(--ochre); padding-bottom:1px; transition:color .3s var(--ease); }
+.contacts dd a:hover{ color:var(--ochre); }
+.contacts dd.plain{ font-family:var(--text); font-weight:500; font-size:var(--t-base); line-height:1.5; letter-spacing:0; }
+.contacts__map{
+  grid-column:9 / 13; align-self:start;
+  border:1px solid var(--rule-hard); background:var(--shade);
+  aspect-ratio:1/1; position:relative; overflow:hidden;
+}
+
+/* Фасад: до клика ничего с серверов Яндекса не грузится.
+   Виджет весит под мегабайт и ставит свои куки — тянуть его
+   на каждом открытии страницы ради блока, куда заходит один
+   посетитель из двадцати, нет смысла. */
+.contacts__map-facade{
+  --pad:clamp(1rem,2.2vw,1.8rem);
+  position:absolute; inset:0; z-index:2;
+  /* stretch, а не flex-start: блок узкий, и кнопка по ширине
+     содержимого вылезала за квадрат и обрезалась overflow:hidden */
+  display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start;
+  gap:1rem; padding:var(--pad);
+  background:var(--shade);
+  /* сетка-подложка намекает на картографию, не изображая её */
+  background-image:
+    repeating-linear-gradient(0deg, var(--rule) 0 1px, transparent 1px 38px),
+    repeating-linear-gradient(90deg, var(--rule) 0 1px, transparent 1px 38px);
+}
+.contacts__map-facade i{
+  width:13px; height:13px; background:var(--ochre);
+  box-shadow:0 0 0 7px var(--ochre-dim);
+  flex:0 0 auto; align-self:flex-start;
+}
+.contacts__map-addr{
+  font-family:var(--mono); font-size:var(--t-xs);
+  line-height:1.75; color:var(--ink-70);
+}
+.contacts__map-facade .btn{
+  /* Кнопка вынута из потока и посажена в центр квадрата: внизу
+     блока лежит подпись «Склад Е8» с z-index:3, и в потоке кнопка
+     уезжала под неё. Ширину держит пара left/right, а не
+     width:max-content — интринсик-размер под overflow:hidden
+     схлопывался и обрезал надпись по буквам. */
+  position:absolute; top:50%; left:var(--pad); right:var(--pad);
+  transform:translateY(-50%);
+  display:flex; justify-content:center; align-items:center;
+  padding:.9rem 1rem; font-size:var(--t-2xs);
+  text-align:center; white-space:nowrap;
+}
+/* Подпись растянута на всю кнопку и центрируется собственным
+   text-align. Так центровка не зависит от justify-content
+   родителя — на растянутой кнопке она давала выравнивание влево. */
+.contacts__map-facade .btn > span{ flex:1 1 auto; width:100%; text-align:center; }
+
+.contacts__map iframe{
+  position:absolute; inset:0; z-index:1;
+  width:100%; height:100%; border:0; display:block;
+}
+.contacts__map span{
+  position:absolute; left:0; bottom:0; z-index:3;
+  background:var(--ink); color:var(--paper);
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:.55rem .85rem; pointer-events:none;
+}
+@media (max-width:900px){
+  .contacts__list{ grid-column:1 / 7 }
+  .contacts__map{ grid-column:1 / 7; margin-top:2.4rem; aspect-ratio:16/9 }
+}
+
+
+</style>
+</head>
+<body data-page="home">
+
+<!-- Логотип: спрайт вклеен в страницу, чтобы сайт открывался
+     и без сервера — по file:// внешний <use> не работает. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<symbol id="saltex-logo" viewBox="0 0 311.34 91.38">
+    <path fill="#111010" d="M18.2,0c.07,1.67.19,9.09-5.37,15.53C7.98,21.13,1.86,22.5,0,22.85v45.69c1.82.28,7.92,1.47,12.78,6.9,5.9,6.59,5.52,14.46,5.42,15.95h274.81c-.05-1.57-.16-10,6.36-16.62,4.55-4.62,9.88-5.86,11.97-6.23V22.85c-2.33-.48-6.53-1.69-10.43-5.09-7.57-6.59-7.87-16.04-7.9-17.75H18.2Z"/>
+    <g fill="#b78741">
+      <path d="M276.71,17.75c-.54-1.57-.94-3.19-1.22-4.82h-4.7v-3h7.33l.16,1.32c.23,1.88.66,3.74,1.27,5.54l-2.84.97Z"/>
+      <path d="M294.51,39.82h-3v-5.07c-1.58-.82-3.1-1.77-4.52-2.85l1.81-2.39c1.51,1.15,3.15,2.14,4.86,2.95l.86.41v6.95Z"/>
+      <path d="M288.8,61.87l-1.81-2.39c1.42-1.08,2.94-2.03,4.52-2.85v-5.07h3v6.95l-.86.41c-1.71.81-3.34,1.81-4.86,2.95Z"/>
+      <path d="M278.12,81.46h-7.33v-3h4.7c.27-1.64.68-3.25,1.22-4.82l2.84.97c-.61,1.79-1.04,3.65-1.27,5.54l-.16,1.32Z"/>
+      <path d="M258.72,81.46h-12.07v-3h12.07v3ZM234.58,81.46h-12.07v-3h12.07v3ZM210.44,81.46h-12.07v-3h12.07v3ZM186.3,81.46h-12.07v-3h12.07v3ZM162.16,81.46h-12.07v-3h12.07v3ZM138.02,81.46h-12.07v-3h12.07v3ZM113.88,81.46h-12.07v-3h12.07v3ZM89.74,81.46h-12.07v-3h12.07v3ZM65.59,81.46h-12.07v-3h12.07v3Z"/>
+      <path d="M41.46,81.46h-7.19l-.27-1.16c-.43-1.86-1.03-3.69-1.78-5.45l2.76-1.18c.66,1.55,1.22,3.15,1.65,4.78h4.83v3Z"/>
+      <path d="M22.3,62.01c-1.51-1.17-3.12-2.23-4.81-3.12l-.79-.42v-6.9h3v5.11c1.55.88,3.04,1.88,4.45,2.97l-1.84,2.37Z"/>
+      <path d="M19.7,39.82h-3v-6.95l.86-.41c1.71-.81,3.34-1.8,4.86-2.95l1.81,2.39c-1.43,1.08-2.95,2.03-4.53,2.84v5.07Z"/>
+      <path d="M34.48,17.75l-2.84-.96c.6-1.79,1.02-3.65,1.24-5.54l.16-1.33h7.33v3h-4.7c-.27,1.64-.67,3.26-1.2,4.82Z"/>
+      <path d="M258.67,12.92h-12.13v-3h12.13v3ZM234.41,12.92h-12.13v-3h12.13v3ZM210.15,12.92h-12.13v-3h12.13v3ZM185.9,12.92h-12.13v-3h12.13v3ZM161.64,12.92h-12.13v-3h12.13v3ZM137.39,12.92h-12.13v-3h12.13v3ZM113.13,12.92h-12.13v-3h12.13v3ZM88.88,12.92h-12.13v-3h12.13v3ZM64.62,12.92h-12.13v-3h12.13v3Z"/>
+    </g>
+    <path fill="#b78741" d="M60.85,58.09s-.42-.02-1.17-.07c-.74-.02-1.59-.12-2.56-.28-.81-.14-1.54-.24-2.21-.28-.64-.07-1.03-.11-1.17-.11-.02-1.97-.13-4.36-.32-7.16.19-.02.38-.04.57-.04h.57c.45,2.09,1.2,3.7,2.24,4.84,1.07,1.14,2.47,1.71,4.2,1.71,1.54,0,2.8-.42,3.77-1.25.97-.85,1.46-1.97,1.46-3.35,0-1.04-.27-1.9-.82-2.56-.52-.66-1.22-1.22-2.1-1.67-.85-.47-1.77-.91-2.74-1.32-1.14-.5-2.23-1.02-3.28-1.57-1.02-.57-1.86-1.29-2.53-2.17-.66-.88-1-2.02-1-3.42,0-1.5.37-2.78,1.1-3.84.76-1.07,1.77-1.87,3.03-2.42,1.26-.57,2.65-.85,4.17-.85.47,0,.96.02,1.46.07.52.05,1.06.12,1.6.21.69.09,1.21.15,1.57.18.38.02.63.04.75.04h.39c.19-.02.34-.05.46-.07.05,1.04.09,2.12.14,3.24.05,1.12.12,2.28.21,3.49-.47.07-.87.09-1.17.07-.55-2.06-1.22-3.55-2.03-4.45-.81-.93-1.96-1.39-3.45-1.39-1.31,0-2.42.36-3.35,1.07-.93.69-1.39,1.72-1.39,3.1,0,.74.17,1.39.5,1.96.36.57.94,1.12,1.74,1.64.81.52,1.92,1.08,3.35,1.67.78.33,1.57.7,2.35,1.1.81.4,1.54.89,2.21,1.46.66.55,1.2,1.22,1.6,2.03.4.78.61,1.72.61,2.81,0,1.61-.4,2.99-1.21,4.13-.81,1.12-1.87,1.97-3.2,2.56-1.31.59-2.75.89-4.34.89ZM78.24,57.63c-.05-.38-.05-.76,0-1.14.66-.07,1.2-.15,1.6-.25s.75-.26,1.03-.5c.28-.26.56-.64.82-1.14.26-.52.57-1.25.93-2.17l7.69-19.72c.26-.09.57-.17.93-.21.38-.05.7-.07.96-.07l7.65,20.33c.33.85.61,1.53.82,2.03.21.47.45.82.71,1.03.26.21.59.37,1,.46.4.07.96.14,1.67.21.05.38.05.76,0,1.14-.83,0-1.69-.01-2.56-.04-.88-.02-1.76-.04-2.63-.04s-1.82.01-2.74.04c-.9.02-1.8.04-2.71.04-.07-.36-.07-.74,0-1.14,1.16-.12,1.97-.23,2.42-.32.45-.12.68-.4.68-.85,0-.19-.04-.4-.11-.64-.07-.24-.17-.53-.28-.89l-2.03-5.48h-8.01l-1.78,4.91c-.17.45-.3.83-.39,1.14-.07.28-.11.55-.11.78,0,.52.24.85.71,1,.5.12,1.31.24,2.42.36.05.4.05.78,0,1.14-.81,0-1.6-.01-2.39-.04-.78-.02-1.58-.04-2.39-.04-.66,0-1.31.01-1.92.04-.62.02-1.28.04-1.99.04ZM86.6,46.81h6.94l-3.49-9.47-3.45,9.47ZM113.44,57.63c-.05-.36-.05-.74,0-1.14,1.12-.12,1.91-.23,2.39-.32.47-.12.77-.36.89-.71.12-.38.18-.98.18-1.82v-16.55c0-1-.06-1.71-.18-2.14-.12-.43-.43-.7-.93-.82-.47-.14-1.26-.26-2.35-.36-.05-.36-.05-.74,0-1.14.5,0,1.08.01,1.74.04.69,0,1.36.01,2.03.04h3.31c.69-.02,1.38-.04,2.06-.04.71-.02,1.29-.04,1.74-.04.07.36.07.74,0,1.14-1.12.09-1.92.2-2.42.32-.5.12-.81.36-.93.71-.12.36-.18.96-.18,1.82v18.51c.02.47.05.8.07.96h5.06c1.97,0,3.43-.44,4.38-1.32.78-.76,1.6-2.09,2.46-3.99.38-.07.75-.07,1.1,0-.28,1.45-.52,2.75-.71,3.92-.17,1.14-.31,2.1-.43,2.88h-6.91c-2.28-.02-4.57-.04-6.87-.04-.45,0-1.02.01-1.71.04h-2.06c-.69.02-1.27.04-1.74.04ZM146.87,57.63c-.05-.36-.05-.74,0-1.14,1.19-.12,2.03-.23,2.53-.32.5-.12.81-.36.93-.71.12-.36.18-.96.18-1.82v-19.44h-2.56c-1.26,0-2.25.18-2.99.53-.71.33-1.29.84-1.74,1.53-.43.69-.85,1.57-1.28,2.63-.38.05-.76.05-1.14,0,.14-1.14.27-2.23.39-3.28.14-1.04.26-2.05.36-3.03,1.54.09,3.25.15,5.13.18h11.71c1.9-.02,3.61-.08,5.13-.18.09.95.19,1.96.28,3.03.09,1.04.21,2.14.36,3.28-.4.05-.8.05-1.17,0-.45-1.09-.9-1.98-1.35-2.67s-1.03-1.2-1.74-1.53c-.69-.33-1.66-.5-2.92-.5h-2.53v18.97c0,.74.02,1.32.07,1.74.05.43.18.74.39.93.24.19.61.33,1.1.43.5.07,1.19.14,2.06.21.07.38.07.76,0,1.14-.5,0-1.1-.01-1.82-.04h-2.06c-.69-.02-1.27-.04-1.74-.04s-1.02.01-1.71.04h-2.06c-.69.02-1.28.04-1.78.04ZM174.62,57.63c-.05-.36-.05-.74,0-1.14,1.12-.12,1.91-.23,2.39-.32.47-.12.77-.36.89-.71.12-.38.18-.98.18-1.82v-16.55c0-1-.06-1.71-.18-2.14-.12-.43-.43-.7-.93-.82-.47-.14-1.26-.26-2.35-.36-.05-.36-.05-.74,0-1.14.62,0,1.15.01,1.6.04h1.42c.47,0,1.04.01,1.71.04h7.8c1.64-.02,3-.04,4.09-.04,1.09-.02,1.73-.04,1.92-.04.09.88.2,1.78.32,2.71.14.93.3,1.91.46,2.95-.4.05-.8.05-1.17,0-.28-.71-.62-1.34-1-1.89-.38-.55-.77-.96-1.17-1.25-.45-.33-1-.58-1.64-.75-.62-.17-1.39-.25-2.31-.25h-4.66v9.72h1.96c1.14,0,2.01-.07,2.6-.21.59-.17,1.03-.51,1.32-1.03.28-.55.51-1.4.68-2.56.43-.07.83-.07,1.21,0-.02,1.42-.05,2.47-.07,3.13v3.24c.02.76.05,1.74.07,2.95-.36.07-.76.07-1.21,0-.14-1.26-.36-2.16-.64-2.71s-.71-.89-1.28-1.03c-.55-.14-1.33-.21-2.35-.21h-2.28v9.68c.02.47.05.78.07.93h4.88c1.19,0,2.14-.09,2.85-.28.74-.21,1.34-.52,1.82-.93.33-.26.72-.71,1.17-1.35.45-.66.88-1.42,1.28-2.28.38-.05.75-.05,1.1,0-.24,1.33-.44,2.53-.61,3.6s-.31,1.99-.43,2.78h-7.26c-1.26-.02-2.41-.04-3.45-.04h-2.46c-1.12,0-2.03.01-2.74.04h-1.85c-.52.02-1.1.04-1.74.04ZM206.19,57.63c-.05-.36-.05-.74,0-1.14,1.14-.12,1.96-.23,2.46-.32.5-.12.81-.36.93-.71s.18-.96.18-1.82v-16.55c0-1-.06-1.71-.18-2.14-.12-.43-.43-.7-.93-.82-.5-.14-1.32-.26-2.46-.36-.05-.36-.05-.74,0-1.14.47,0,1.06.01,1.74.04.71,0,1.41.01,2.1.04h3.31c.66-.02,1.33-.04,1.99-.04.69-.02,1.27-.04,1.74-.04.07.36.07.74,0,1.14-1.09.09-1.87.2-2.35.32-.47.12-.77.36-.89.71-.12.36-.18.96-.18,1.82v8.79l8.19-8.69c.9-.97,1.35-1.64,1.35-1.99,0-.31-.21-.52-.64-.64-.43-.14-1.13-.25-2.1-.32-.05-.4-.05-.78,0-1.14.4,0,.91.01,1.53.04.62,0,1.23.01,1.85.04h1.5c.76,0,1.47-.01,2.14-.04.69-.02,1.44-.04,2.24-.04.05.38.05.76,0,1.14-.74.07-1.35.17-1.85.28-.47.12-.94.32-1.39.61-.43.28-.91.69-1.46,1.21-.55.52-1.23,1.21-2.06,2.06l-5.23,5.41,7.33,9.65c.57.74,1.04,1.33,1.42,1.78.38.43.75.76,1.1,1,.38.21.81.37,1.28.46.5.09,1.13.18,1.89.25.07.38.07.76,0,1.14-.45,0-.98-.01-1.6-.04h-1.82c-.59-.02-1.1-.04-1.53-.04-.26,0-.61.01-1.03.04h-1.1l-8.54-11.5-1.46,1.6v5.48c0,1,.06,1.72.18,2.17.12.43.42.7.89.82.5.12,1.28.23,2.35.32.07.38.07.76,0,1.14-.47,0-1.06-.01-1.74-.04h-2.03c-.66-.02-1.22-.04-1.67-.04s-1.01.01-1.67.04h-2.03c-.66.02-1.25.04-1.74.04ZM248.58,58.09s-.42-.02-1.17-.07c-.74-.02-1.59-.12-2.56-.28-.81-.14-1.54-.24-2.21-.28-.64-.07-1.03-.11-1.17-.11-.02-1.97-.13-4.36-.32-7.16.19-.02.38-.04.57-.04h.57c.45,2.09,1.2,3.7,2.24,4.84,1.07,1.14,2.47,1.71,4.2,1.71,1.54,0,2.8-.42,3.77-1.25.97-.85,1.46-1.97,1.46-3.35,0-1.04-.27-1.9-.82-2.56-.52-.66-1.22-1.22-2.1-1.67-.85-.47-1.77-.91-2.74-1.32-1.14-.5-2.23-1.02-3.28-1.57-1.02-.57-1.86-1.29-2.53-2.17-.66-.88-1-2.02-1-3.42,0-1.5.37-2.78,1.1-3.84.76-1.07,1.77-1.87,3.03-2.42,1.26-.57,2.65-.85,4.17-.85.47,0,.96.02,1.46.07.52.05,1.06.12,1.6.21.69.09,1.21.15,1.57.18.38.02.63.04.75.04h.39c.19-.02.34-.05.46-.07.05,1.04.09,2.12.14,3.24.05,1.12.12,2.28.21,3.49-.47.07-.87.09-1.17.07-.55-2.06-1.22-3.55-2.03-4.45-.81-.93-1.96-1.39-3.45-1.39-1.31,0-2.42.36-3.35,1.07-.93.69-1.39,1.72-1.39,3.1,0,.74.17,1.39.5,1.96.36.57.94,1.12,1.74,1.64.81.52,1.92,1.08,3.35,1.67.78.33,1.57.7,2.35,1.1.81.4,1.54.89,2.21,1.46.66.55,1.2,1.22,1.6,2.03.4.78.61,1.72.61,2.81,0,1.61-.4,2.99-1.21,4.13-.81,1.12-1.87,1.97-3.2,2.56-1.31.59-2.75.89-4.34.89Z"/>
+  </symbol>
+</svg>
+
+
+<a class="skip" href="#top">К содержанию</a>
+
+<!-- курсор-ножницы: два лезвия вращаются вокруг общей оси -->
+<div class="cursor" id="cursor" aria-hidden="true">
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <g class="cursor__blade cursor__blade--a">
+      <path pathLength="1" d="M23.5 27.5 16 19 6.5 4"/>
+      <circle pathLength="1" cx="24.6" cy="28.4" r="2.6"/>
+    </g>
+    <g class="cursor__blade cursor__blade--b">
+      <path pathLength="1" d="M8.5 27.5 16 19 25.5 4"/>
+      <circle pathLength="1" cx="7.4" cy="28.4" r="2.6"/>
+    </g>
+    <circle cx="16" cy="19" r="1.15" fill="currentColor" stroke="none"/>
+  </svg>
+</div>
+<div class="grid-overlay" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<!-- Логотип лежит в assets/img/logo.svg и подключается через <use>:
+     иначе один и тот же контур пришлось бы держать на трёх страницах -->
+
+<!-- ══════════ ПРЕЛОАДЕР ══════════ -->
+<noscript><style>.preloader{display:none!important}</style></noscript>
+<div class="preloader" id="preloader" role="presentation" aria-hidden="true">
+  <div class="preloader__logo">
+    <svg viewBox="0 0 311.34 91.38" aria-hidden="true"><use href="#saltex-logo"></use></svg>
+  </div>
+  <div>
+    <p class="preloader__caption">Загрузка каталога</p>
+    <p class="preloader__num"><span id="pre-pct">0</span><sup>%</sup></p>
+  </div>
+  <div class="preloader__bar"><i id="pre-bar"></i></div>
+</div>
+<script>
+/* Судьбу прелоадера решаем до первой отрисовки — иначе постоянные
+   клиенты ловят чёрную вспышку при каждом заходе. */
+(function(){
+  var seen = false;
+  try { seen = sessionStorage.getItem('saltex-preloaded') === '1'; } catch(e){}
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pre = document.getElementById('preloader');
+  if (seen || reduced) { pre.className = 'preloader is-skipped'; return; }
+  document.documentElement.className += ' is-loading';
+  /* Страховка, независимая от основного скрипта: если он упадёт с ошибкой,
+     прелоадер всё равно уйдёт и сайт не останется заблокированным. */
+  setTimeout(function(){
+    pre.className = 'preloader is-skipped';
+    document.documentElement.className =
+      document.documentElement.className.replace(' is-loading','');
+  }, 7000);
+})();
+</script>
+
+<!-- ══════════ СОГЛАСИЕ НА COOKIE ══════════ -->
+<div class="cookies" id="cookies" role="region" aria-label="Согласие на использование cookie" hidden>
+  <p class="cookies__title">Файлы cookie</p>
+  <p class="cookies__text">Мы&nbsp;используем cookie, чтобы сайт работал корректно и&nbsp;мы&nbsp;понимали, какие ткани вам интересны. Вы&nbsp;можете принять их&nbsp;все или оставить только необходимые для&nbsp;работы сайта.</p>
+  <div class="cookies__actions">
+    <button class="btn" type="button" data-cookie="all"><span>Принять все</span></button>
+    <button class="btn btn--ghost" type="button" data-cookie="necessary"><span>Только необходимые</span></button>
+  </div>
+</div>
+
+<!-- ══════════ ШАПКА ══════════ -->
+<header class="masthead">
+  <!-- 1. Логотип с дескриптором -->
+  <a class="masthead__logo" href="#top" aria-label="САЛТЕКС — трикотажные полотна, на главную">
+    <svg viewBox="0 0 311.34 91.38" role="img"><title>САЛТЕКС</title><use href="#saltex-logo"></use></svg>
+    <span class="masthead__descriptor">Трикотажные полотна</span>
+  </a>
+
+  <!-- 2. «О компании» и «Контакты» объединены в один пункт:
+          секция контактов идёт сразу за блоком о компании -->
+  <nav class="masthead__nav" id="nav" aria-label="Основная навигация">
+    <a href="catalog.html" data-nav-id="catalog">Каталог</a>
+    <a href="#colors" data-nav-id="colors">Цвета</a>
+    <a href="#about" data-nav-id="about">О компании</a>
+    <a href="#contacts" data-nav-id="contacts">Контакты</a>
+  </nav>
+
+  <div class="masthead__actions">
+    <!-- 5. Курс ЦБ + 5%: по нему пересчитан весь каталог -->
+    <div class="fx" id="fx" hidden>
+      <b class="fx__value">—</b>
+      <span class="fx__note">ЦБ +5%</span>
+    </div>
+
+    <!-- 3. Кнопки мессенджеров открывают приветствие, а не сразу чат -->
+    <a class="btn-icon" data-chat="tg" href="https://t.me/salteksrus" aria-label="Написать менеджеру в Telegram" title="Написать в Telegram">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.94 4.3 18.9 19.1c-.23 1.02-.85 1.27-1.72.79l-4.75-3.5-2.29 2.2c-.25.26-.47.48-.96.48l.34-4.85 8.82-7.97c.38-.34-.09-.53-.6-.19L6.84 13.2 2.15 11.7c-1.02-.32-1.04-1.02.21-1.51l18.33-7.07c.85-.31 1.6.2 1.25 1.18Z"/></svg>
+    </a>
+    <a class="btn-icon btn-icon--max" data-chat="max" href="https://max.ru/u/79852201354" aria-label="Написать менеджеру в МАКС" title="Написать в МАКС">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.13 2 11.22c0 2.88 1.44 5.45 3.7 7.14v3.4l3.4-1.87c.93.26 1.9.4 2.9.4 5.52 0 10-4.13 10-9.07C22 6.13 17.52 2 12 2Zm.9 12.06-2.5-2.66-4.9 2.66 5.4-5.72 2.56 2.66 4.83-2.66-5.39 5.72Z"/></svg>
+    </a>
+
+    <!-- 4. Вместо «Оформить заказ» — телефон быстрого набора -->
+    <a class="btn-icon btn-icon--tel" data-phone href="tel:+79852201354" aria-label="Позвонить в САЛТЕКС">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z"/></svg>
+      <span class="btn-icon__num">+7 (985) 220-13-54</span>
+    </a>
+
+    <a class="btn-icon btn-icon--cart" href="cart.html" aria-label="Корзина">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4V3a5 5 0 0 1 10 0v1h3v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4h3Zm2 0h6V3a3 3 0 0 0-6 0v1ZM6 6v13h12V6H6Z"/></svg>
+      <span class="btn-icon__badge" data-cart-count hidden>0</span>
+    </a>
+
+    <button class="masthead__burger" id="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Меню">
+      <i aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ══════════ ГЕРОЙ ══════════ -->
+  <section class="bay hero">
+    <!-- Панорамное фоновое видео 21:9. Источник в data-src, а не в src:
+         скрипт подставит его только там, где ролик уместен — на мобильном
+         интернете 3,7 МБ фона в трафик не входят. -->
+    <div class="hero__video" aria-hidden="true">
+      <video id="hero-video" muted loop playsinline preload="none"
+             data-src="video/hero.mp4" width="2206" height="946"></video>
+    </div>
+
+    <div class="hero__text">
+      <h1 class="rise">
+        Трикотажное
+        <span class="shift">полотно <em>без</em></span>
+        посредников
+      </h1>
+      <p class="hero__lede rise" style="--d:120ms">
+        Мы&nbsp;управляем себестоимостью, сроками и&nbsp;качеством
+        на&nbsp;всей цепочке&nbsp;— от&nbsp;пряжи до&nbsp;рулона
+        на&nbsp;вашем складе.
+      </p>
+      <p class="hero__meta rise" style="--d:180ms">
+        Собственное производство · Турция<br>
+        Кулирка · Футер · Кашкорсе · Рибана<br>
+        Самовывоз со&nbsp;склада в&nbsp;Москве
+      </p>
+      <div class="hero__actions rise" style="--d:240ms">
+        <a class="btn" href="catalog.html"><span>Смотреть каталог</span></a>
+      </div>
+    </div>
+
+    <!-- ── Быстрая связь ── -->
+    <div class="quick rise" style="--d:420ms" id="quick">
+      <p class="quick__kicker">Быстрая связь</p>
+      <p class="quick__title">Прайс со&nbsp;скидкой <em>10%</em><br>на&nbsp;первый заказ</p>
+      <p class="quick__sub">Пришлём на&nbsp;почту или в&nbsp;Telegram в&nbsp;течение часа. Без звонков и&nbsp;спама.</p>
+
+      <button class="btn btn--ochre btn--wide" type="button"
+              data-lead="Прайс со скидкой 10% на первый заказ"
+              data-lead-title="Получить прайс-лист"><span>Получить прайс</span></button>
+      <p class="quick__fine">Три поля: имя, телефон и&nbsp;почта. Telegram&nbsp;— по&nbsp;желанию.</p>
+    </div>
+
+  </section>
+
+  <!-- бегущая строка -->
+  <div class="ticker" aria-hidden="true">
+    <!-- data-sets говорит скрипту, сколько одинаковых наборов лежит
+         в разметке: по нему считается ширина одного набора -->
+    <ul data-sets="4">
+      <li>Кулирка</li><li>Футер 2-х нитка</li><li>Футер 3-х нитка</li><li>Кашкорсе</li><li>Рибана</li><li>Компакт пенье</li><li>Карде</li><li>ОЕ</li><li>83 цвета по Pantone</li><li>Окрашивание под заказ</li>
+      <li>Кулирка</li><li>Футер 2-х нитка</li><li>Футер 3-х нитка</li><li>Кашкорсе</li><li>Рибана</li><li>Компакт пенье</li><li>Карде</li><li>ОЕ</li><li>83 цвета по Pantone</li><li>Окрашивание под заказ</li>
+      <li>Кулирка</li><li>Футер 2-х нитка</li><li>Футер 3-х нитка</li><li>Кашкорсе</li><li>Рибана</li><li>Компакт пенье</li><li>Карде</li><li>ОЕ</li><li>83 цвета по Pantone</li><li>Окрашивание под заказ</li>
+      <li>Кулирка</li><li>Футер 2-х нитка</li><li>Футер 3-х нитка</li><li>Кашкорсе</li><li>Рибана</li><li>Компакт пенье</li><li>Карде</li><li>ОЕ</li><li>83 цвета по Pantone</li><li>Окрашивание под заказ</li>
+    </ul>
+  </div>
+
+  <!-- ══════════ ПРЕИМУЩЕСТВА ══════════ -->
+  <section class="bay perks" id="perks">
+    <p class="rule"><b>Почему САЛТЕКС</b><span>Пять причин</span></p>
+    <ul class="perks__grid">
+
+      <li class="perk rise">
+        <svg class="perk__ico" viewBox="0 0 48 48" aria-hidden="true">
+          <path pathLength="1" d="M24 5 8 11v13c0 9.6 6.6 16.9 16 19 9.4-2.1 16-9.4 16-19V11L24 5Z"/>
+          <path pathLength="1" d="m17 23.5 5 5 10-10"/>
+        </svg>
+        <p><b>Надёжность</b>&nbsp;— четверть века в&nbsp;производстве</p>
+      </li>
+
+      <li class="perk rise" style="--d:80ms">
+        <svg class="perk__ico" viewBox="0 0 48 48" aria-hidden="true">
+          <path pathLength="1" d="M24 6 6 15l18 9 18-9-18-9Z"/>
+          <path pathLength="1" d="m6 24 18 9 18-9"/>
+          <path pathLength="1" d="m6 33 18 9 18-9"/>
+        </svg>
+        <p>Регулярное обновление <b>ассортимента</b></p>
+      </li>
+
+      <li class="perk rise" style="--d:160ms">
+        <svg class="perk__ico" viewBox="0 0 48 48" aria-hidden="true">
+          <circle pathLength="1" cx="24" cy="18" r="13"/>
+          <path pathLength="1" d="m24 11 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L24 11Z"/>
+          <path pathLength="1" d="m16.5 29.5-2.5 13 10-5 10 5-2.5-13"/>
+        </svg>
+        <p><b>Высокое качество</b> от&nbsp;мировых производителей</p>
+      </li>
+
+      <li class="perk rise" style="--d:240ms">
+        <svg class="perk__ico" viewBox="0 0 48 48" aria-hidden="true">
+          <path pathLength="1" d="M43 26 26 43 5 22V5h17l21 21Z"/>
+          <circle pathLength="1" cx="14" cy="14" r="3.2"/>
+        </svg>
+        <p><b>Выгодные условия</b> сотрудничества</p>
+      </li>
+
+      <li class="perk rise" style="--d:320ms">
+        <svg class="perk__ico" viewBox="0 0 48 48" aria-hidden="true">
+          <ellipse pathLength="1" cx="24" cy="13" rx="16" ry="6"/>
+          <path pathLength="1" d="M8 13v22c0 3.3 7.2 6 16 6s16-2.7 16-6V13"/>
+          <ellipse pathLength="1" cx="24" cy="13" rx="6" ry="2.2"/>
+        </svg>
+        <p><b>Большой ассортимент</b> на&nbsp;складе</p>
+      </li>
+
+    </ul>
+  </section>
+
+  <!-- ══════════ ПРОЦЕСС СОТРУДНИЧЕСТВА ══════════ -->
+  <section class="bay process" id="process">
+    <p class="rule"><b>Открытый процесс сотрудничества</b><span>Четыре шага</span></p>
+    <ol class="flow rise">
+
+      <li class="flow__step rise" style="--d:220ms">
+        <div>
+          <p class="flow__no">01</p>
+          <h3 class="flow__title">Заявка</h3>
+          <p class="flow__text">Называете полотно, объём и&nbsp;срок. Можно просто прислать фото образца&nbsp;— подберём аналог.</p>
+        </div>
+      </li>
+
+      <li class="flow__step rise" style="--d:400ms">
+        <div>
+          <p class="flow__no">02</p>
+          <h3 class="flow__title">Расчёт и&nbsp;образцы</h3>
+          <p class="flow__text">Присылаем цену в&nbsp;течение часа и&nbsp;отправляем физические образцы&nbsp;— до&nbsp;любых обязательств с&nbsp;вашей стороны.</p>
+        </div>
+      </li>
+
+      <li class="flow__step rise" style="--d:580ms">
+        <div>
+          <p class="flow__no">03</p>
+          <h3 class="flow__title">Договор и&nbsp;оплата</h3>
+          <p class="flow__text">Фиксируем цену, объём и&nbsp;дату отгрузки в&nbsp;договоре. Никаких изменений задним числом.</p>
+        </div>
+      </li>
+
+      <li class="flow__step rise" style="--d:760ms">
+        <div>
+          <p class="flow__no">04</p>
+          <h3 class="flow__title">Отгрузка</h3>
+          <p class="flow__text">Забираете партию со&nbsp;склада в&nbsp;Москве в&nbsp;согласованный день.</p>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <!-- ══════════ ПЕРСОНАЛЬНЫЙ ПОДБОР ══════════
+       Каталог целиком живёт на catalog.html и на главную
+       не выносится: сюда попадают только те, кому нужного
+       в каталоге не нашлось. -->
+  <section class="bay catalog" id="offer">
+    <div class="offer">
+      <div class="offer__body">
+        <p class="offer__label">Персональное предложение</p>
+        <p class="offer__title">Не&nbsp;нашли нужную ткань?</p>
+        <p class="offer__text">Назовите состав, плотность и&nbsp;объём&nbsp;— произведём на&nbsp;собственных мощностях в&nbsp;Турции и&nbsp;пришлём расчёт.<br>Работаем напрямую, без&nbsp;посредников.</p>
+      </div>
+      <div class="offer__actions">
+        <a class="btn" href="catalog.html"><span>Смотреть каталог</span></a>
+        <button class="btn btn--ghost" type="button" data-lead="Персональный подбор полотна" data-lead-title="Подобрать полотно"><span>Оставить заявку</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ ЧТО ШЬЮТ ИЗ НАШЕГО ПОЛОТНА ══════════
+       Раздел витринный: изделия не продаются, об этом сказано
+       прямо в тексте, иначе пойдут запросы цен на одежду.
+       Плитки — заглушки до фотосъёмки. -->
+  <section class="bay clothes" id="clothes">
+    <p class="rule"><b>Что шьют из нашего полотна</b><span>изделия не&nbsp;продаём</span></p>
+
+    <div class="clothes__intro rise">
+      <h2>Полотно в&nbsp;готовых изделиях</h2>
+      <p>Здесь показано, что шьём мы&nbsp;в&nbsp;качестве образцов&nbsp;— чтобы было понятно, как полотно ведёт себя в&nbsp;изделии.</p>
+      <p class="clothes__note">Готовую одежду мы&nbsp;не&nbsp;продаём.</p>
+    </div>
+  </section>
+
+  <!-- Лента изделий во всю ширину экрана. Едет непрерывно, при
+       наведении замирает — иначе рассмотреть кадр невозможно.
+       data-sets: сколько одинаковых наборов лежит в разметке,
+       по нему скрипт считает шаг цикла. Копий доклеит сам. -->
+  <div class="clothes__strip" id="clothes-strip">
+    <ul class="clothes__track" data-sets="2">
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Худи — футер 3-х нитка, начёс</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Свитшот — футер 3-х нитка, петля</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Футболка — кулирка 30/1</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Костюм — футер 2-х нитка</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Лонгслив — кулирка с лайкрой</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Манжеты и&nbsp;резинка — кашкорсе</p></li>
+
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Худи — футер 3-х нитка, начёс</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Свитшот — футер 3-х нитка, петля</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Футболка — кулирка 30/1</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Костюм — футер 2-х нитка</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Лонгслив — кулирка с лайкрой</p></li>
+      <li><div class="clothes__shot">фото</div><p class="clothes__cap">Манжеты и&nbsp;резинка — кашкорсе</p></li>
+    </ul>
+  </div>
+
+  <!-- ══════════ ЦВЕТОВАЯ КАРТА ══════════
+       Возвращена на главную (ТЗ 3.1). Вёрстка и данные — с итерации 2,
+       83 цвета Pantone TPG лежат в data/colors.json. -->
+  <section class="bay colors" id="colors">
+    <p class="rule"><b>Цветовая карта</b><span>Окрашивание под&nbsp;заказ · партия от&nbsp;100&nbsp;кг</span></p>
+
+    <div class="colors__intro rise">
+      <h2>Выберите цвет&nbsp;— подберём полотно</h2>
+      <p>Любое полотно из&nbsp;каталога красим по&nbsp;этой карте. Нажмите оттенок&nbsp;— предложим выбрать ткань и&nbsp;откроем её карточку с&nbsp;этим цветом.</p>
+      <p class="warn">Экран передаёт оттенок приблизительно. Точный цвет определяет номер Pantone&nbsp;— перед запуском партии подтверждайте его по&nbsp;физическому образцу.</p>
+    </div>
+
+    <div class="swatches" id="swatches" role="group" aria-label="Цветовая карта — выберите оттенок"></div>
+  </section>
+
+  <!-- ══════════ О КОМПАНИИ ══════════ -->
+  <section class="bay about" id="about">
+    <p class="rule"><b>О&nbsp;компании</b><span>Москва&nbsp;— Турция</span></p>
+    <h2 class="about__lead rise">Четверть века<br>мы задаём <em>стандарт</em><br>трикотажного рынка.</h2>
+    <div class="about__text rise" style="--d:120ms">
+      <p>Свои фабрики по&nbsp;производству и&nbsp;крашению трикотажного полотна мы&nbsp;открыли в&nbsp;<strong>Турции в&nbsp;1999&nbsp;году</strong>. Современное оборудование, четверть века практики и&nbsp;собственная технологическая база вывели нас в&nbsp;число лидеров отрасли в&nbsp;стране с&nbsp;вековыми традициями текстиля.</p>
+      <p>Мы&nbsp;<strong>не&nbsp;используем посредников</strong>, а&nbsp;значит&nbsp;— полностью управляем себестоимостью, сроками и&nbsp;качеством.</p>
+      <p>Производственные мощности и&nbsp;команда технологов позволяют выпускать полотно <strong>любого качества и&nbsp;с&nbsp;любыми характеристиками</strong>&nbsp;— под конкретную задачу, а&nbsp;не&nbsp;из&nbsp;того, что нашлось на&nbsp;складе.</p>
+      <p>Рынок изменился: торговля на&nbsp;маркетплейсах требует быстрого доступа к&nbsp;нужной ткани и&nbsp;стабильного качества. Поэтому больше <strong>пяти лет назад</strong> мы&nbsp;открыли склад в&nbsp;Москве&nbsp;— с&nbsp;широким ассортиментом полотна и&nbsp;цветов и&nbsp;менеджерами, которые ведут заказ от&nbsp;расчёта до&nbsp;отгрузки.</p>
+      <p>Наша экспертиза востребована как частными предпринимателями, так и&nbsp;<strong>B2B-клиентами</strong>, нуждающимися в&nbsp;бесперебойных поставках. Выбирая «Салтекс», вы&nbsp;выбираете надёжность и&nbsp;долгосрочное партнёрство.</p>
+    </div>
+    <dl class="figures">
+      <div class="rise"><dt>1999<sup>—</sup></dt><dd>год запуска собственных фабрик в&nbsp;Турции</dd></div>
+      <div class="rise" style="--d:80ms"><dt>2004<sup>—</sup></dt><dd>год основания компании в&nbsp;Москве</dd></div>
+      <div class="rise" style="--d:160ms"><dt>5<sup>+</sup></dt><dd>лет складу в&nbsp;Москве с&nbsp;постоянным наличием</dd></div>
+      <div class="rise" style="--d:240ms"><dt>0<sup>—</sup></dt><dd>посредников между вами и&nbsp;производством</dd></div>
+    </dl>
+  </section>
+
+  <!-- ══════════ КОНТАКТЫ ══════════ -->
+  <section class="bay contacts" id="contacts">
+    <p class="rule"><b>Контакты</b><span>Пн&nbsp;— Пт · 09:00&nbsp;— 18:00</span></p>
+    <dl class="contacts__list">
+      <div class="rise">
+        <dt>Почта</dt>
+        <dd><a href="mailto:zakaz@sal-teks.ru">zakaz@sal-teks.ru</a></dd>
+      </div>
+      <div class="rise" style="--d:80ms">
+        <dt>Телефон</dt>
+        <dd>
+          <a href="tel:+79852201354">+7 (985) 220-13-54</a><br>
+          <a href="tel:+74952201354">+7 (495) 220-13-54</a><br>
+          <a href="tel:+79104335346">+7 (910) 433-53-46</a><br>
+          <a href="tel:+79850289043">+7 (985) 028-90-43</a>
+        </dd>
+      </div>
+      <div class="rise" style="--d:160ms">
+        <dt>Адрес склада</dt>
+        <dd class="plain">Московская область, Томилино,<br>Новорязанское шоссе, 25-й&nbsp;километр, 5к37<br>Склад Е8</dd>
+      </div>
+      <div class="rise" style="--d:240ms">
+        <dt>Отгрузка</dt>
+        <dd class="plain">Только самовывоз<br>со&nbsp;склада в&nbsp;Москве</dd>
+      </div>
+    </dl>
+    <div class="contacts__map rise" style="--d:200ms" id="map-block">
+      <div class="contacts__map-facade" id="map-facade">
+        <i aria-hidden="true"></i>
+        <p class="contacts__map-addr">
+          Московская область, Томилино<br>
+          Новорязанское шоссе, 25-й&nbsp;км<br>
+          строение 5к37, склад Е8
+        </p>
+        <button class="btn" type="button" id="map-load"><span>Показать карту</span></button>
+      </div>
+      <span>Склад Е8 · Томилино</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="bay colophon">
+
+  <!-- Сертификаты. Отсутствующий файл прячется скриптом,
+       поэтому пустых рамок в подвале не появится. -->
+  <div class="certs">
+    <p class="certs__label">Сертификаты и стандарты</p>
+    <ul class="certs__row" id="certs">
+      <li><img src="img/certs/oeko-tex.svg" alt="OEKO-TEX — сертификация текстиля на безопасность для здоровья" loading="lazy" decoding="async"></li>
+      <li><img src="img/certs/bci.svg" alt="Better Cotton Initiative — ответственное производство хлопка" loading="lazy" decoding="async"></li>
+      <li><img src="img/certs/lenzing.svg" alt="Lenzing — сертифицированное целлюлозное волокно" loading="lazy" decoding="async"></li>
+      <li><img src="img/certs/organic-blended-1.svg" alt="Organic Blended Content Standard" loading="lazy" decoding="async"></li>
+      <li><img src="img/certs/organic-blended-2.svg" alt="Organic Blended Content Standard" loading="lazy" decoding="async"></li>
+      <li><img src="img/certs/iso-2015.svg" alt="Сертификат ISO 2015" loading="lazy" decoding="async"></li>
+      <li><img src="img/certs/iso-2015-2.svg" alt="Сертификат ISO 2015" loading="lazy" decoding="async"></li>
+      <li><img src="img/certs/iso-2018.svg" alt="Сертификат ISO 2018" loading="lazy" decoding="async"></li>
+    </ul>
+  </div>
+
+  <div class="colophon__logo">
+    <svg viewBox="0 0 311.34 91.38" role="img"><title>САЛТЕКС</title><use href="#saltex-logo"></use></svg>
+  </div>
+  <p>Оптовая продажа трикотажных тканей.<br>Собственное производство в&nbsp;Турции.<br>Самовывоз со&nbsp;склада в&nbsp;Москве.<br><a href="#contacts">Контакты и&nbsp;адрес склада</a></p>
+  <p class="fine">© 2026 САЛТЕКС<br>Нажмите G — сетка</p>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* фоновому видео нужно знать про prefers-reduced-motion */
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Сертификаты: прячем те, файлов которых ещё нет ── */
+  document.querySelectorAll('#certs img').forEach(function(im){
+    im.addEventListener('error', function(){ this.parentNode.hidden = true; });
+  });
+
+  /* ── Фоновое видео ──
+     Грузим только там, где оно оправдано: не при reduced-motion,
+     не на узких экранах и не в режиме экономии трафика. */
+  /* Мышь как признак десктопа. По ширине окна судить нельзя: ноутбук
+     с масштабом 150% отдаёт меньше 900 CSS-пикселей и остался бы без
+     видео, а телефон в альбомной ориентации — наоборот, получил бы его. */
+  var fine = matchMedia('(pointer: fine)').matches;
+
+  var heroVideo = document.getElementById('hero-video');
+  if (heroVideo) {
+    var conn = navigator.connection || {};
+    var thrifty = conn.saveData === true || /2g/.test(conn.effectiveType || '');
+    if (!reduced && fine && !thrifty) {
+      heroVideo.src = heroVideo.dataset.src;
+      /* play() отдаёт промис и может отклониться политикой автовоспроизведения —
+         без catch это всплывёт необработанной ошибкой в консоли */
+      var p = heroVideo.play();
+      if (p && p.catch) p.catch(function(){});
+    }
+  }
+
+  /* ── Бегущая строка ──────────────────────────────────────────
+     Лента едет ровно на ширину одного набора слов, поэтому
+     следующий набор встаёт на место предыдущего кадр в кадр.
+     Ширину меряем, а не берём процентом от полосы: округление
+     max-content и незакрытый правый край давали видимый рывок.
+     Копий доклеиваем столько, чтобы ленты хватало на экран
+     плюс один шаг — тогда справа никогда не открывается пустота. */
+  (function(){
+    /* Две ленты с одной механикой: строка ассортимента и полоса
+       с изделиями. Скорость у них разная — текст читают на лету,
+       фотографии рассматривают, поэтому у полосы шаг медленнее. */
+    var tracks = [
+      { el: document.querySelector('.ticker ul'),      speed: 56 },
+      { el: document.querySelector('.clothes__track'), speed: 34 }
+    ].filter(function(t){ return t.el; });
+
+    if (!tracks.length) return;
+
+    function make(track){
+      var ul   = track.el;
+      var box  = ul.parentNode;
+      var sets = parseInt(ul.getAttribute('data-sets'), 10) || 1;
+      var per  = ul.children.length / sets;
+      if (per !== Math.floor(per) || !per) return null;
+
+      return function tune(){
+        var step = ul.getBoundingClientRect().width / sets;
+        if (!step) return;
+        /* guard страхует от вечного цикла, если ширина почему-то нулевая */
+        var guard = 0;
+        while (ul.getBoundingClientRect().width < box.clientWidth + step && guard++ < 20) {
+          for (var i = 0; i < per; i++) ul.appendChild(ul.children[i].cloneNode(true));
+          sets++;
+        }
+        ul.style.setProperty('--step', step.toFixed(2) + 'px');
+        ul.style.setProperty('--dur',  (step / track.speed).toFixed(2) + 's');
+      };
+    }
+
+    var tuners = tracks.map(make).filter(Boolean);
+    function tuneAll(){ tuners.forEach(function(fn){ fn(); }); }
+
+    tuneAll();
+    /* шрифты приезжают позже разметки и меняют ширину слов;
+       у полосы с фотографиями то же самое делают сами картинки */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(tuneAll);
+    addEventListener('load', tuneAll);
+
+    var t;
+    addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(tuneAll, 200); });
+  })();
+
+  /* ── Карта: виджет Яндекса подгружаем по клику ── */
+  var mapBtn = document.getElementById('map-load');
+  if (mapBtn) {
+    mapBtn.addEventListener('click', function(){
+      var address = 'Московская область, Томилино, Новорязанское шоссе, 25-й километр, 5к37';
+      var frame = document.createElement('iframe');
+      /* encodeURIComponent, а не ручное экранирование: в адресе есть
+         запятые, дефис и кириллица — руками ошибиться слишком легко */
+      frame.src = 'https://yandex.ru/map-widget/v1/?mode=search&z=16&text=' +
+                  encodeURIComponent(address);
+      frame.title = 'Карта проезда к складу Е8, Томилино';
+      frame.loading = 'lazy';
+      frame.allowFullscreen = true;
+      document.getElementById('map-block').appendChild(frame);
+      document.getElementById('map-facade').remove();
+    });
+  }
+
+})();
+</script>
+<script src="assets/js/core.js"></script>
+<!-- Палитра и ассортимент: копии JSON, чтобы блок работал и при
+     открытии сайта без сервера. Правятся JSON, копии генерируются. -->
+<script src="data/colors.js"></script>
+<script src="data/catalog.js"></script>
+<script>
+/* ── Цветовая карта ──
+   Цвет к ткани не привязан: карта общая для всего каталога.
+   Клик по оттенку — не заявка, а начало выбора: спрашиваем полотно
+   и уводим в его карточку с уже выбранным цветом. */
+(function(){
+  'use strict';
+  var S = window.SALTEKS;
+  var wrap = document.getElementById('swatches');
+  var palette = window.SALTEKS_COLORS;
+  var catalog = window.SALTEKS_DATA;
+  if (!wrap || !S || !palette || !Array.isArray(palette.colors)) return;
+
+  /* В подписи только номер: русские названия оттенков заказчик
+     просил не показывать — цвет определяет пантон, а не слово. */
+  wrap.innerHTML = palette.colors.map(function(c){
+    return '<button class="swatch" type="button"' +
+      ' data-code="' + S.esc(c.k) + '"' +
+      ' style="--c:' + S.esc(c.h) + '"' +
+      ' aria-label="Pantone ' + S.esc(c.k) + '">' +
+      '<i aria-hidden="true"></i>' +
+      '<em>' + S.esc(c.k) + '</em>' +
+    '</button>';
+  }).join('');
+
+  /* ── Диалог выбора полотна ── */
+  var dlg = document.createElement('dialog');
+  dlg.className = 'modal';
+  dlg.id = 'pick';
+  dlg.innerHTML =
+    '<div class="modal__inner">' +
+      '<button class="modal__close" type="button" data-pick-close aria-label="Закрыть">&times;</button>' +
+      '<p class="modal__kicker">Цвет <span id="pick-code"></span></p>' +
+      '<h2 class="modal__title">Выберите полотно</h2>' +
+      '<p class="modal__text">Покрасим в&nbsp;этот цвет любое полотно из&nbsp;каталога. Выберите позицию&nbsp;— откроем её карточку с&nbsp;уже выбранным цветом.</p>' +
+      '<div class="pick__list" id="pick-list"></div>' +
+    '</div>';
+  document.body.appendChild(dlg);
+
+  var listEl = dlg.querySelector('#pick-list');
+  var codeEl = dlg.querySelector('#pick-code');
+
+  /* Список строится один раз: ассортимент от выбранного цвета
+     не зависит, перестраивать его на каждый клик незачем. */
+  if (catalog && Array.isArray(catalog.products)) {
+    var byType = {};
+    (catalog.types || []).forEach(function(t){ byType[t.id] = t; });
+
+    var groups = {};
+    catalog.products.forEach(function(p){
+      (groups[p.type] = groups[p.type] || []).push(p);
+    });
+
+    listEl.innerHTML = (catalog.types || [])
+      .filter(function(t){ return groups[t.id]; })
+      .map(function(t){
+        return '<div class="pick__group">' +
+          '<p class="pick__type">' + S.esc(t.name) + '</p>' +
+          groups[t.id].map(function(p){
+            var d = p.density_label ? ' · ' + p.density_label + ' г/м²' : '';
+            return '<a class="pick__item" href="#" data-id="' + S.esc(p.id) + '">' +
+                   S.esc(p.name) + '<span>' + S.esc(d.replace(' · ', '')) + '</span></a>';
+          }).join('') +
+        '</div>';
+      }).join('');
+  } else {
+    listEl.innerHTML = '<p class="pick__fail">Каталог не&nbsp;загрузился. Откройте его напрямую и&nbsp;выберите полотно там.</p>';
+  }
+
+  var current = '';
+
+  wrap.addEventListener('click', function(e){
+    var sw = e.target.closest('.swatch');
+    if (!sw) return;
+    current = sw.dataset.code;
+    codeEl.textContent = current;
+    document.documentElement.classList.add('is-modal');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+
+  dlg.addEventListener('close', function(){
+    document.documentElement.classList.remove('is-modal');
+  });
+
+  dlg.addEventListener('click', function(e){
+    if (e.target.closest('[data-pick-close]')) { dlg.close(); return; }
+    if (e.target === dlg) { dlg.close(); return; }
+
+    var item = e.target.closest('.pick__item');
+    if (!item) return;
+    e.preventDefault();
+    location.href = 'product.html?id=' + encodeURIComponent(item.dataset.id) +
+                    '&color=' + encodeURIComponent(current);
+  });
+})();
+</script>
+</body>
+</html>
