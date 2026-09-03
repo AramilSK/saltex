@@ -6,7 +6,7 @@
 <title>САЛТЕКС — оптовая продажа трикотажных тканей</title>
 <meta name="description" content="САЛТЕКС — оптовые поставки трикотажного полотна с собственных фабрик в Турции с 1999 года. Кулирка, футер, кашкорсе, рибана. Склад в Москве, без посредников.">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#111010">
+<meta name="theme-color" content="#ffffff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -34,6 +34,11 @@
   min-height:clamp(540px,84vh,880px);
   align-content:center;
   padding-block:clamp(3rem,8vh,6rem);
+  /* Видео ниже выходит за поля на --margin в каждую сторону, и без
+     обрезки здесь оно расширяло документ на 34px: на телефоне это
+     давало горизонтальную прокрутку. Раньше её глушил overflow-x
+     на body — но он же ломал прилипание шапки. Режем по месту. */
+  overflow:hidden;
 }
 
 /* видео выходит за поля страницы до самых краёв экрана */

@@ -47,6 +47,11 @@
 *,*::before,*::after{ box-sizing:border-box; }
 html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:7rem; }
 
+/* Здесь НЕЛЬЗЯ ставить overflow-x:hidden. Это превращает body
+   в контейнер прокрутки, и sticky-шапка начинает липнуть к нему,
+   а не к окну: на телефоне она перестаёт держаться верха и над ней
+   видно страницу. Если что-то вылезает вбок — обрезать надо тот
+   элемент, который вылезает, а не весь документ. */
 body{
   margin:0;
   background:var(--paper);
@@ -54,7 +59,6 @@ body{
   font-family:var(--text);
   font-size:var(--t-base);
   line-height:1.6;
-  overflow-x:hidden;
 }
 
 img,svg{ max-width:100%; display:block; }
@@ -135,8 +139,9 @@ html.is-loading{ overflow:hidden; }
   position:sticky; top:0; z-index:800;
   padding:.85rem var(--margin);
   display:flex; align-items:center; gap:clamp(.8rem,2vw,2rem);
-  background:#ffffffee;
-  backdrop-filter:blur(16px) saturate(150%);
+  /* Плотный белый, без прозрачности: под шапкой не должно
+     просвечивать содержимое страницы. */
+  background:var(--paper);
   border-bottom:1px solid var(--rule-hard);
 }
 
@@ -288,6 +293,9 @@ html.is-loading{ overflow:hidden; }
   .masthead__burger{ display:inline-flex; }
 }
 @media (max-width:560px){
+  /* Логотип с дескриптором встаёт по центру экрана; строка
+     с курсом и иконками остаётся прижатой вправо, как была. */
+  .masthead__logo{ margin-inline:auto }
   .masthead{ padding-inline:var(--margin); gap:.6rem }
   .masthead__logo svg{ width:104px }
   .masthead__descriptor{ font-size:.625rem; letter-spacing:.14em }
@@ -759,3 +767,7 @@ html.is-loading{ overflow:hidden; }
    можно отдать нормальную колонку, а не четверть сетки. */
 .clothes__intro{ grid-column:1 / 7; }
 @media (max-width:900px){ .clothes__intro{ grid-column:1 / 7 } }
+/* Номер телефона не разрывается посреди строки: «+7 (985)»
+   на одной строке, а «028-90-43» на другой читается как два
+   разных номера. */
+a[href^="tel:"]{ white-space:nowrap; }

@@ -6,7 +6,7 @@
 <title>Карточка полотна — САЛТЕКС</title>
 <meta name="description" content="Характеристики трикотажного полотна, цветовые варианты и расчёт стоимости за килограмм, метр и рулон по курсу ЦБ +5%.">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#111010">
+<meta name="theme-color" content="#ffffff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -145,6 +145,10 @@
 
   <!-- ── Другие цвета и калькулятор ── -->
   <div class="prod__buy">
+    <!-- Плавающая кнопка: только на телефоне, и только пока
+         настоящая кнопка «В корзину» не видна на экране. -->
+    <a class="prod__jump" id="jump" href="#to-cart" hidden>Купить<span aria-hidden="true">↓</span></a>
+
     <!-- Палитра общая для всего каталога: цвет к ткани не привязан,
          красим любое полотно в любой оттенок карты. -->
     <div class="prod__colors" id="colors">

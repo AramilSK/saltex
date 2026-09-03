@@ -232,6 +232,34 @@
       toCart.querySelector('span').textContent = 'Добавить ещё';
     });
 
+    /* ── Плавающая кнопка «Купить» ──
+       Пока настоящая кнопка «В корзину» не на экране, показываем
+       таблетку внизу справа: на телефоне до калькулятора нужно
+       прокрутить всю карточку. Как только он виден — прячем,
+       чтобы не перекрывать сам блок покупки. */
+    var jump = document.getElementById('jump');
+    if (jump && toCart) {
+      /* Считаем геометрию сами, без IntersectionObserver и без rAF:
+         и то и другое привязано к циклу отрисовки и в части окружений
+         доставляется через раз. Одно чтение координат на событие
+         прокрутки стоит дёшево, зато работает всегда. */
+      function syncJump(){
+        var r = toCart.getBoundingClientRect();
+        /* запас снизу: кнопка, показавшаяся у самого края, ещё не
+           «на экране» — до неё нужно доскроллить */
+        jump.hidden = r.top < window.innerHeight - 40 && r.bottom > 0;
+      }
+
+      addEventListener('scroll', syncJump, { passive:true });
+      addEventListener('resize', syncJump);
+      syncJump();
+
+      jump.addEventListener('click', function(e){
+        e.preventDefault();
+        toCart.scrollIntoView({ behavior: S.reduced ? 'auto' : 'smooth', block: 'center' });
+      });
+    }
+
     root.hidden = false;
   }
 

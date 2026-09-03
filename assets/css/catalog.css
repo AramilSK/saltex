@@ -680,3 +680,35 @@
 .btn--danger::before{ background:var(--ink); }
 .btn--danger:hover,.btn--danger:focus-visible{ border-color:var(--ink); }
 
+
+/* ══════════════ ПЛАВАЮЩАЯ КНОПКА «КУПИТЬ» ══════════════
+   Только на телефоне: на широком экране калькулятор и так стоит
+   в правой колонке и виден сразу. Прячется скриптом, как только
+   настоящая кнопка «В корзину» попадает на экран. */
+.prod__jump{ display:none; }
+
+@media (max-width:900px){
+  .prod__jump{
+    position:fixed; z-index:700;
+    right:var(--margin);
+    bottom:calc(1rem + env(safe-area-inset-bottom, 0px));
+    display:inline-flex; align-items:center; gap:.5rem;
+    padding:.85rem 1.3rem;
+    background:var(--ochre); color:var(--paper);
+    text-decoration:none;
+    font-family:var(--text); font-weight:600;
+    font-size:var(--t-xs); letter-spacing:.06em; text-transform:uppercase;
+    box-shadow:0 .4rem 1.6rem #11101033;
+    animation:jump-in .35s var(--ease) both;
+  }
+  .prod__jump[hidden]{ display:none; }
+  .prod__jump span{ font-size:1.1em; line-height:1; }
+}
+
+@keyframes jump-in{
+  from{ opacity:0; transform:translateY(.6rem) }
+  to{   opacity:1; transform:none }
+}
+@media (prefers-reduced-motion:reduce){
+  .prod__jump{ animation:none }
+}
