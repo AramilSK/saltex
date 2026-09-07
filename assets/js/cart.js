@@ -37,6 +37,14 @@
     }
     return '#8D8F8F';
   }
+  /* Номер в палитре компании: в корзине хранится код пантона,
+     а заказывают по номеру — показываем оба. */
+  function numOf(code){
+    for (var i = 0; i < PALETTE.length; i++) {
+      if (PALETTE[i].k === code) return PALETTE[i].p;
+    }
+    return '';
+  }
 
   function rowHTML(p, kg, rate){
     /* Цена по массе именно этой строки: набрал больше порога —
@@ -59,7 +67,7 @@
     var code = S.cart.colorOf(p.id);
     var colorLine = code
       ? '<p class="crow__color"><i style="background:' + S.esc(hexOf(code)) +
-        '" aria-hidden="true"></i>' + S.esc(code) + '</p>'
+        '" aria-hidden="true"></i>№ ' + S.esc(numOf(code)) + ' · ' + S.esc(code) + '</p>'
       : '<p class="crow__color crow__color--none">цвет не выбран</p>';
 
     return '<div class="crow" data-id="' + S.esc(p.id) + '">' +
@@ -201,7 +209,7 @@
   document.getElementById('send').addEventListener('click', function(){
     var lines = S.cart.items().filter(function(r){ return byId[r.id]; }).map(function(r){
       var p = byId[r.id];
-      var code = r.color ? ' · цвет ' + r.color : ' · цвет не выбран';
+      var code = r.color ? ' · цвет № ' + numOf(r.color) + ' (' + r.color + ')' : ' · цвет не выбран';
       return p.name + ' · ' + p.densityLabel + ' г/м²' + code + ' · ' +
              S.num0(r.kg) + ' кг · арт. ' + (p.sku || p.id);
     });

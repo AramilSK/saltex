@@ -105,16 +105,29 @@
       sw.innerHTML = palette.map(function(c){
         return '<button class="prod__sw" type="button"' +
                ' data-code="' + S.esc(c.k) + '"' +
+               ' data-num="' + S.esc(c.p) + '"' +
                ' style="background:' + S.esc(c.h) + '"' +
                (c.k === wanted ? ' aria-pressed="true"' : ' aria-pressed="false"') +
-               ' title="Pantone ' + S.esc(c.k) + '">' +
-               '<span class="vh">' + S.esc(c.k) + '</span></button>';
+               ' title="№ ' + S.esc(c.p) + ' · Pantone ' + S.esc(c.k) + '">' +
+               '<span class="vh">№ ' + S.esc(c.p) + ', Pantone ' + S.esc(c.k) + '</span></button>';
       }).join('');
+
+      /* Номер в палитре компании по коду пантона: в адресе и в
+         корзине ездит код, а показать нужно и номер. */
+      function numOf(code){
+        for (var i = 0; i < palette.length; i++) {
+          if (palette[i].k === code) return palette[i].p;
+        }
+        return '';
+      }
 
       document.getElementById('colors-count').textContent = palette.length;
 
       function paintPick(){
-        pickLabel.textContent = color ? 'Выбран ' + color : 'Цвет не выбран';
+        var num = color ? numOf(color) : '';
+        pickLabel.textContent = color
+          ? 'Выбран № ' + num + ' · ' + color
+          : 'Цвет не выбран';
         pickLabel.classList.toggle('is-set', !!color);
       }
       paintPick();

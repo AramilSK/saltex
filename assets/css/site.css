@@ -692,7 +692,13 @@ html.is-loading{ overflow:hidden; }
   font-family:var(--mono); font-size:var(--t-2xs); font-style:normal;
   letter-spacing:.04em; color:var(--ink);
 }
-.swatch b{ font-size:var(--t-2xs); font-weight:500; line-height:1.25; color:var(--ink-45); }
+/* Пантон под номером — тоже код, поэтому моноширинный.
+   Приглушён: первым читается номер палитры, по нему заказывают. */
+.swatch b{
+  font-family:var(--mono); font-size:var(--t-2xs); font-weight:400;
+  line-height:1.2; letter-spacing:.02em; color:var(--ink-45);
+  margin-top:-.2rem;
+}
 
 .colors__bar{
   grid-column:5 / 13; margin-top:clamp(1.6rem,4vh,2.6rem);
