@@ -22,10 +22,9 @@
      ══════════════════════════════════════════════════ */
   var CATALOG_ENDPOINT = 'data/catalog.json';
 
-  /* Есть ли реальные фотографии полотна в img/fabric/.
-     Пока съёмки нет, карточки рисуют фактуру цветом позиции;
-     после загрузки файлов поставить true. */
-  var PHOTOS = false;
+  /* Фотографии полотна лежат в img/fabric/. У позиций, для которых
+     съёмки пока нет (поле photo пустое), остаётся нейтральная фактура. */
+  var PHOTOS = true;
 
   var PAGE = 24;          /* сколько карточек показывать за раз */
 
@@ -81,7 +80,12 @@
           bulk_from_kg: Number(p.price && p.price.bulk_from_kg) || 250
         },
         roll_kg_avg:  Number(p.roll_kg_avg) || (type ? type.roll_kg_avg : 20),
-        photo:        p.photo || ''
+        /* photo — обложка для сетки каталога, photos — кадры ткани
+           для карточки товара. Старая выгрузка знала только photo. */
+        photo:        p.photo || (Array.isArray(p.photos) && p.photos[0]) || '',
+        photos:       (Array.isArray(p.photos) && p.photos.length
+                        ? p.photos
+                        : (p.photo ? [p.photo] : [])).map(String)
       };
     }).filter(function(p){ return p.id && p.price.base > 0; });
 

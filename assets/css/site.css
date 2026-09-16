@@ -777,3 +777,17 @@ html.is-loading{ overflow:hidden; }
    на одной строке, а «028-90-43» на другой читается как два
    разных номера. */
 a[href^="tel:"]{ white-space:nowrap; }
+
+/* ══════════════ ЛОГОТИП-ЭМБЛЕМА ══════════════
+   Новый знак круглый и растровый (PNG с прозрачным фоном,
+   вектора у заказчика нет). В шапке эмблема и дескриптор
+   стоят в строку: под круглым знаком подпись висит криво. */
+.masthead__logo{ flex-direction:row; align-items:center; gap:.7rem; width:auto; }
+.masthead__logo img{ width:56px; height:56px; display:block; flex:0 0 auto; }
+.masthead__descriptor{ margin-top:0; text-indent:0; }
+.preloader__logo{ width:clamp(120px,14vw,160px); }
+.preloader__logo img{ width:100%; height:auto; display:block; }
+.colophon__logo img{ width:clamp(88px,9vw,120px); height:auto; display:block; }
+@media (max-width:560px){
+  .masthead__logo img{ width:46px; height:46px; }
+}

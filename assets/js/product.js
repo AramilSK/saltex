@@ -50,17 +50,42 @@
 
     document.title = p.name + ' · САЛТЕКС';
 
-    /* ── Фото ── */
+    /* ── Фото ──
+       Первый кадр — главный, остальные миниатюрами под ним.
+       У позиции без съёмки остаётся нейтральная фактура,
+       миниатюры не рисуем. */
     var shot = document.getElementById('shot');
-    shot.innerHTML = texture() +
-      (C.PHOTOS && p.photo
-        ? '<img src="' + S.esc(p.photo) + '" alt="' + S.esc(p.name) + '" decoding="async">'
-        : '');
-
-    /* Миниатюры имеют смысл только когда есть настоящая съёмка:
-       рисовать три одинаковых квадрата фактуры незачем. */
     var thumbs = document.getElementById('thumbs');
-    if (thumbs) thumbs.hidden = !C.PHOTOS;
+    var gallery = (C.PHOTOS && p.photos && p.photos.length) ? p.photos : [];
+
+    function showShot(i){
+      shot.innerHTML = texture() +
+        '<img src="' + S.esc(gallery[i]) + '" alt="' + S.esc(p.name) + '" decoding="async">';
+      if (thumbs) thumbs.querySelectorAll('button').forEach(function(b, n){
+        b.setAttribute('aria-pressed', String(n === i));
+      });
+    }
+
+    if (gallery.length) {
+      if (thumbs) {
+        thumbs.innerHTML = gallery.length > 1
+          ? gallery.map(function(src, n){
+              return '<button type="button" aria-label="Фото ' + (n + 1) + '" aria-pressed="false">' +
+                     '<img src="' + S.esc(src) + '" alt="" loading="lazy" decoding="async"></button>';
+            }).join('')
+          : '';
+        thumbs.hidden = gallery.length < 2;
+        thumbs.addEventListener('click', function(e){
+          var b = e.target.closest('button');
+          if (!b) return;
+          showShot(Array.prototype.indexOf.call(thumbs.children, b));
+        });
+      }
+      showShot(0);
+    } else {
+      shot.innerHTML = texture();
+      if (thumbs) thumbs.hidden = true;
+    }
 
     /* ── Заголовок ── */
     document.getElementById('title').textContent = p.name;
