@@ -6,7 +6,7 @@ window.SALTEKS_DATA = {
   "updated": "2026-09-02T12:00:00+03:00",
   "currency": "USD",
   "price_column": "vat",
-  "note": "Фото: 15 позиций из 16 (img/fabric), нет только Рибаны с лайкрой. photo — обложка для сетки каталога, photos — только кадры ткани для карточки товара; где кадр один, он стоит в обоих полях. Кулирка с лайкрой 230 намеренно делит кадры с 190-200 (решение заказчика). Заполнено по прайс-листу с зелёными отметками, 16 позиций. Цены — колонка «С НДС $ за кг» (ТЗ 2.5). Качество, состав, ширина, граммаж и пм/кг сняты с правой части прайса. Поле form выведено из колонки ширины: «185 (рулон)» → рулон, «100*2 (пачка)» → пачка.",
+  "note": "Фото: все 16 позиций (img/fabric). photo — обложка для сетки каталога, photos — кадры ткани для карточки товара; где кадра ткани нет, внутри показывается обложка. Кулирка с лайкрой 230 повторяет кадры 190-200, а Рибана с лайкрой делит обложку с Кашкорсе карде 220 — так прислал заказчик. Заполнено по прайс-листу с зелёными отметками, 16 позиций. Цены — колонка «С НДС $ за кг» (ТЗ 2.5). Качество, состав, ширина, граммаж и пм/кг сняты с правой части прайса. Поле form выведено из колонки ширины: «185 (рулон)» → рулон, «100*2 (пачка)» → пачка.",
 
   "types": [
     { "id": "futer3",      "name": "Футер 3-х нитка", "roll_kg_avg": 25, "order": 1 },
@@ -66,7 +66,7 @@ window.SALTEKS_DATA = {
       "roll_kg_avg": 25,
       "price": { "base": 10.40, "bulk": 10.00, "bulk_from_kg": 250 },
       "photo": "img/fabric/FT3-PET-340.jpg",
-      "photos": ["img/fabric/FT3-PET-340.jpg"]
+      "photos": ["img/fabric/FT3-PET-340-2.jpg"]
     },
     {
       "id": "FT3-NCH-340",
@@ -115,7 +115,7 @@ window.SALTEKS_DATA = {
       "roll_kg_avg": 22,
       "price": { "base": 11.20, "bulk": 10.80, "bulk_from_kg": 250 },
       "photo": "img/fabric/FT2-3030-240.jpg",
-      "photos": ["img/fabric/FT2-3030-240.jpg"]
+      "photos": ["img/fabric/FT2-3030-240-2.jpg"]
     },
     {
       "id": "FT2-30150-240",
@@ -163,7 +163,8 @@ window.SALTEKS_DATA = {
       "m_per_kg": 2.2,
       "roll_kg_avg": 20,
       "price": { "base": 11.20, "bulk": 10.80, "bulk_from_kg": 250 },
-      "photo": "img/fabric/KUL-HB-240.jpg"
+      "photo": "img/fabric/KUL-HB-240.jpg",
+      "photos": ["img/fabric/KUL-HB-240-2.jpg"]
     },
     {
       "id": "KUL-LAI-230",
@@ -178,8 +179,8 @@ window.SALTEKS_DATA = {
       "m_per_kg": 2.3,
       "roll_kg_avg": 20,
       "price": { "base": 11.20, "bulk": 10.80, "bulk_from_kg": 250 },
-      "photo": "img/fabric/KUL-LAI-190.jpg",
-      "photos": ["img/fabric/KUL-LAI-190-2.jpg"]
+      "photo": "img/fabric/KUL-LAI-230.jpg",
+      "photos": ["img/fabric/KUL-LAI-230-2.jpg"]
     },
     {
       "id": "KUL-150",
@@ -211,7 +212,8 @@ window.SALTEKS_DATA = {
       "m_per_kg": 2.0,
       "roll_kg_avg": 18,
       "price": { "base": 11.00, "bulk": null, "bulk_from_kg": null },
-      "photo": "img/fabric/KSH-VC-420.jpg"
+      "photo": "img/fabric/KSH-VC-420.jpg",
+      "photos": ["img/fabric/KSH-VC-420-2.jpg"]
     },
     {
       "id": "KSH-3001-240",
@@ -242,7 +244,8 @@ window.SALTEKS_DATA = {
       "m_per_kg": 3.8,
       "roll_kg_avg": 18,
       "price": { "base": 7.40, "bulk": 7.00, "bulk_from_kg": 250 },
-      "photo": "img/fabric/KSH-KAR-220.jpg"
+      "photo": "img/fabric/KSH-KAR-220.jpg",
+      "photos": ["img/fabric/KSH-KAR-220-2.jpg"]
     },
 
     {
@@ -258,7 +261,7 @@ window.SALTEKS_DATA = {
       "m_per_kg": 2.0,
       "roll_kg_avg": 18,
       "price": { "base": 7.30, "bulk": null, "bulk_from_kg": null },
-      "photo": ""
+      "photo": "img/fabric/RIB-LAI-220.jpg"
     },
     {
       "id": "RIB-NCH-250",
