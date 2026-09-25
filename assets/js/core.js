@@ -201,24 +201,12 @@
       });
   }
 
+  /* Курс ЦБ отключён вместе с ценами (ТЗ каталог 3 и 16): считать
+     в рублях больше нечего, поэтому ни запроса к cbr-xml-daily.ru,
+     ни таймера обновления. Сам механизм оставлен целиком — если
+     цены вернут, достаточно снять этот выход. */
   function fxInit(){
-    var cached = fxRead();
-    if (cached) {
-      fxApply(cached, false);
-      if (Date.now() - (cached.ts || 0) < FX.TTL) return;   /* свежий кэш — не дёргаем ЦБ */
-    } else {
-      fxRender(false);   /* показываем страховочное значение, помеченное как неточное */
-    }
-    fxFetch();
-
-    setInterval(function(){
-      if (!doc.hidden) fxFetch();
-    }, FX.TTL);
-
-    doc.addEventListener('visibilitychange', function(){
-      var c = fxRead();
-      if (!doc.hidden && (!c || Date.now() - (c.ts || 0) > FX.TTL)) fxFetch();
-    });
+    return;
   }
 
   /* Отдаёт курс сразу, если он уже есть, иначе дожидается ответа ЦБ.

@@ -430,10 +430,43 @@
 }
 
 /* ── Другие цвета ── */
-.prod__colors{ margin-bottom:1.4rem; }
-.prod__swatches{ display:grid; grid-template-columns:repeat(8,1fr); gap:.3rem; }
-@media (max-width:1180px){ .prod__swatches{ grid-template-columns:repeat(12,1fr) } }
-@media (max-width:560px){  .prod__swatches{ grid-template-columns:repeat(7,1fr) } }
+/* Палитра под фотографией ткани (ТЗ каталог 5). На компьютере —
+   один ряд со стрелками, кнопка раскрывает всю палитру. На узком
+   экране стрелки не нужны: там оттенки просто переносятся по
+   строкам, пальцем это удобнее, чем листать. */
+.prod__colors{ margin:1.2rem 0 1.4rem; }
+.prod__strip{ display:flex; align-items:center; gap:.45rem; }
+.prod__arrow{
+  flex:0 0 auto; width:1.9rem; height:1.9rem;
+  appearance:none; background:none; cursor:pointer;
+  border:1px solid var(--rule-hard); color:var(--ink);
+  font-size:1rem; line-height:1;
+  transition:color .25s var(--ease), border-color .25s var(--ease);
+}
+.prod__arrow:hover{ color:var(--ochre); border-color:var(--ochre); }
+.prod__arrow[disabled]{ opacity:.3; cursor:default; }
+/* overflow-x:auto, а не hidden: со скрытым переполнением ряд
+   не двигается даже программно — scrollLeft остаётся нулём.
+   Полосу прокрутки убираем, листание идёт стрелками и свайпом. */
+.prod__swatches{
+  flex:1 1 auto; display:flex; gap:.3rem;
+  overflow-x:auto; scroll-behavior:smooth;
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.prod__swatches::-webkit-scrollbar{ display:none; }
+.prod__swatches .prod__sw{ flex:0 0 2.6rem; }
+.prod__colors.is-open .prod__swatches{ flex-wrap:wrap; overflow:visible; }
+.prod__colors.is-open .prod__arrow{ display:none; }
+
+/* У набивки образцы рисунка не листаются: их десяток, они просто
+   переносятся по строкам (правка 25.09). */
+.prod__colors--prints .prod__arrow{ display:none; }
+.prod__colors--prints .prod__swatches{ flex-wrap:wrap; overflow:visible; }
+.prod__colors--prints .prod__swatches{ gap:.45rem; }
+@media (max-width:1180px){
+  .prod__arrow{ display:none; }
+  .prod__swatches{ flex-wrap:wrap; overflow:visible; }
+}
 /* Оттенки — кнопки, а не ссылки: выбор цвета остаётся на этой же
    карточке и никуда не ведёт. Селекторы держат оба варианта,
    чтобы старая разметка не осыпалась. */
@@ -451,10 +484,8 @@
   box-shadow:inset 0 0 0 2px var(--ink); transform:scale(.9);
 }
 .prod__swatches .prod__sw:focus-visible{ outline:2px solid var(--ochre); outline-offset:2px; }
-.prod__swatches a:nth-child(n+17),
-.prod__swatches .prod__sw:nth-child(n+17){ display:none; }
-.prod__colors.is-open .prod__swatches a:nth-child(n+17),
-.prod__colors.is-open .prod__swatches .prod__sw:nth-child(n+17){ display:block; }
+/* Прежнего скрытия «всё, что дальше шестнадцатого» больше нет:
+   ряд листается стрелками, а кнопка раскрывает палитру целиком. */
 
 /* Подпись выбранного оттенка: номер пантона, без русского названия */
 .prod__pick{
@@ -469,6 +500,30 @@
 }
 .prod__more:hover{ color:var(--ochre); }
 .prod__more[hidden]{ display:none; }
+
+/* Образцы рисунка у набивки (ТЗ каталог 14): блоки крупнее
+   цветовых квадратов — на маленьком рисунок не разобрать. */
+/* Селектор с контейнером: у базового правила .prod__swatches
+   .prod__sw стоит width:100%, и одиночный класс его не перебивал —
+   плитки растягивались на всю строку. */
+.prod__swatches .prod__sw--print{
+  flex:0 0 72px; width:72px; height:72px;
+  aspect-ratio:auto;
+  background-size:cover; background-position:center;
+  border:1px solid var(--rule);
+}
+.prod__sw--print[aria-pressed="true"]{
+  outline:2px solid var(--ochre); outline-offset:2px;
+}
+
+/* Наличие оттенка подтверждает менеджер: карта показывает палитру,
+   а не остатки на складе (ТЗ каталог 9). */
+.prod__hint{
+  margin-top:.9rem; font-size:var(--t-2xs); line-height:1.5;
+  color:var(--ink-45);
+}
+.prod__hint a{ color:var(--ink); text-decoration:none; border-bottom:1px solid var(--ochre); white-space:nowrap; }
+.prod__hint a:hover{ color:var(--ochre); }
 
 /* ══════════════ КАЛЬКУЛЯТОР ══════════════ */
 .calc{

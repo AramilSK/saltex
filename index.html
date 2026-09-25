@@ -53,6 +53,25 @@
 }
 .hero__video video,
 .hero__video img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Слайд-шоу первого экрана (ТЗ главная 20). Кадры лежат друг на
+   друге, меняется прозрачность — так переход плавный и без скачка
+   вёрстки. Заглушки отличаются оттенком, чтобы смена была заметна
+   до появления настоящих фотографий. */
+.hero__slides{ position:absolute; inset:0; }
+.hero__slide{
+  position:absolute; inset:0; opacity:0;
+  transition:opacity 1.2s var(--ease);
+  display:grid; place-items:center; background:var(--shade);
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-25);
+}
+.hero__slide.is-on{ opacity:1; }
+.hero__slide img{ width:100%; height:100%; object-fit:cover; display:block; }
+.hero__slide:nth-child(2){ background:#EFECE7; }
+.hero__slide:nth-child(3){ background:#E8E5E0; }
+.hero__slide:nth-child(4){ background:#F2EFEA; }
+.hero__slide:nth-child(5){ background:#E4E1DC; }
 /* вуаль плотная слева под текстом и почти прозрачная справа —
    так видео остаётся видимым, а типографика не теряет контраст */
 .hero__video::after{
@@ -160,9 +179,11 @@
 .perk__ico > *:nth-child(3){ transition-delay:.32s; }
 
 /* ── бегущая строка-ассортимент ── */
+/* Охристая лента вместо чёрной (ТЗ главная 7): текст на ней
+   тёмный — по белому на охре контраста не хватает. */
 .ticker{
-  border-block:1px solid var(--rule-hard);
-  background:var(--ink); color:var(--paper);
+  border-block:1px solid var(--ochre);
+  background:var(--ochre); color:var(--ink);
   overflow:hidden; padding-block:.7rem;
 }
 /* Отступ живёт на самих элементах, а не в gap контейнера.
@@ -182,7 +203,7 @@
   display:flex; align-items:center; gap:2.5rem;
   padding-right:2.5rem;
 }
-.ticker li::after{ content:""; width:5px; height:5px; background:var(--ochre); flex:0 0 auto; }
+.ticker li::after{ content:""; width:5px; height:5px; background:var(--paper); flex:0 0 auto; }
 @keyframes slide{ from{transform:translateX(0)} to{transform:translateX(calc(-1 * var(--step,50%)))} }
 
 /* ══════════════ ПРОЦЕСС СОТРУДНИЧЕСТВА ══════════════
@@ -499,7 +520,6 @@
   <!-- 1. Логотип с дескриптором -->
   <a class="masthead__logo" href="#top" aria-label="САЛТЕКС — трикотажные полотна, на главную">
     <img src="assets/img/logo-emblem-256.png" alt="САЛТЕКС" width="256" height="256" decoding="async">
-    <span class="masthead__descriptor">Трикотажные полотна</span>
   </a>
 
   <!-- 2. «О компании» и «Контакты» объединены в один пункт:
@@ -542,29 +562,29 @@
 
   <!-- ══════════ ГЕРОЙ ══════════ -->
   <section class="bay hero">
-    <!-- Панорамное фоновое видео 21:9. Источник в data-src, а не в src:
-         скрипт подставит его только там, где ролик уместен — на мобильном
-         интернете 3,7 МБ фона в трафик не входят. -->
+    <!-- ТЗ главная 20: вместо фонового видео — пять фотографий,
+         смена раз в 6 секунд плавным переходом. Сейчас заглушки:
+         чтобы поставить снимки, достаточно заменить <span> внутри
+         слайда на <img src="img/hero/1.jpg" alt="">. -->
     <div class="hero__video" aria-hidden="true">
-      <video id="hero-video" muted loop playsinline preload="none"
-             data-src="video/hero.mp4" width="2206" height="946"></video>
+      <div class="hero__slides" id="hero-slides">
+        <div class="hero__slide is-on"><span>фото 1</span></div>
+        <div class="hero__slide"><span>фото 2</span></div>
+        <div class="hero__slide"><span>фото 3</span></div>
+        <div class="hero__slide"><span>фото 4</span></div>
+        <div class="hero__slide"><span>фото 5</span></div>
+      </div>
     </div>
 
     <div class="hero__text">
       <h1 class="rise">
-        Трикотажное
-        <span class="shift">полотно <em>без</em></span>
-        посредников
+        Трикотажные
+        <span class="shift">полотна <em>на&nbsp;складе</em></span>
+        в&nbsp;Москве
       </h1>
       <p class="hero__lede rise" style="--d:120ms">
-        Мы&nbsp;управляем себестоимостью, сроками и&nbsp;качеством
-        на&nbsp;всей цепочке&nbsp;— от&nbsp;пряжи до&nbsp;рулона
-        на&nbsp;вашем складе.
-      </p>
-      <p class="hero__meta rise" style="--d:180ms">
-        Собственное производство · Турция<br>
-        Кулирка · Футер · Кашкорсе · Рибана<br>
-        Самовывоз со&nbsp;склада в&nbsp;Москве
+        Продажа от&nbsp;рулона&nbsp;· Собственное производство&nbsp;·
+        Турция&nbsp;· Самовывоз со&nbsp;склада в&nbsp;Москве
       </p>
       <div class="hero__actions rise" style="--d:240ms">
         <a class="btn" href="catalog.html"><span>Смотреть каталог</span></a>
@@ -575,12 +595,9 @@
     <div class="quick rise" style="--d:420ms" id="quick">
       <p class="quick__kicker">Быстрая связь</p>
       <p class="quick__title">Прайс со&nbsp;скидкой <em>10%</em><br>на&nbsp;первый заказ</p>
-      <p class="quick__sub">Пришлём на&nbsp;почту или в&nbsp;Telegram в&nbsp;течение часа. Без звонков и&nbsp;спама.</p>
-
       <button class="btn btn--ochre btn--wide" type="button"
               data-lead="Прайс со скидкой 10% на первый заказ"
               data-lead-title="Получить прайс-лист"><span>Получить прайс</span></button>
-      <p class="quick__fine">Три поля: имя, телефон и&nbsp;почта. Telegram&nbsp;— по&nbsp;желанию.</p>
     </div>
 
   </section>
@@ -599,7 +616,7 @@
 
   <!-- ══════════ ПРЕИМУЩЕСТВА ══════════ -->
   <section class="bay perks" id="perks">
-    <p class="rule"><b>Почему САЛТЕКС</b><span>Пять причин</span></p>
+    <p class="rule"><b>Почему САЛТЕКС</b></p>
     <ul class="perks__grid">
 
       <li class="perk rise">
@@ -637,10 +654,15 @@
       </li>
 
       <li class="perk rise" style="--d:320ms">
+        <!-- Иконка ассортимента по мотиву заказчика, перерисована
+             штрихом (правка 25.09): толщина линий и радиусы как
+             у остальных иконок ряда. -->
         <svg class="perk__ico" viewBox="0 0 48 48" aria-hidden="true">
-          <ellipse pathLength="1" cx="24" cy="13" rx="16" ry="6"/>
-          <path pathLength="1" d="M8 13v22c0 3.3 7.2 6 16 6s16-2.7 16-6V13"/>
-          <ellipse pathLength="1" cx="24" cy="13" rx="6" ry="2.2"/>
+          <rect pathLength="1" x="6" y="19" width="36" height="23" rx="3"/>
+          <path pathLength="1" d="M17 19V10a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v9"/>
+          <path pathLength="1" d="M24 19v23"/>
+          <path pathLength="1" d="M11 35h7"/>
+          <path pathLength="1" d="M30 35h7"/>
         </svg>
         <p><b>Большой ассортимент</b> на&nbsp;складе</p>
       </li>
@@ -648,45 +670,9 @@
     </ul>
   </section>
 
-  <!-- ══════════ ПРОЦЕСС СОТРУДНИЧЕСТВА ══════════ -->
-  <section class="bay process" id="process">
-    <p class="rule"><b>Открытый процесс сотрудничества</b><span>Четыре шага</span></p>
-    <ol class="flow rise">
-
-      <li class="flow__step rise" style="--d:220ms">
-        <div>
-          <p class="flow__no">01</p>
-          <h3 class="flow__title">Заявка</h3>
-          <p class="flow__text">Называете полотно, объём и&nbsp;срок. Можно просто прислать фото образца&nbsp;— подберём аналог.</p>
-        </div>
-      </li>
-
-      <li class="flow__step rise" style="--d:400ms">
-        <div>
-          <p class="flow__no">02</p>
-          <h3 class="flow__title">Расчёт и&nbsp;образцы</h3>
-          <p class="flow__text">Присылаем цену в&nbsp;течение часа и&nbsp;отправляем физические образцы&nbsp;— до&nbsp;любых обязательств с&nbsp;вашей стороны.</p>
-        </div>
-      </li>
-
-      <li class="flow__step rise" style="--d:580ms">
-        <div>
-          <p class="flow__no">03</p>
-          <h3 class="flow__title">Договор и&nbsp;оплата</h3>
-          <p class="flow__text">Фиксируем цену, объём и&nbsp;дату отгрузки в&nbsp;договоре. Никаких изменений задним числом.</p>
-        </div>
-      </li>
-
-      <li class="flow__step rise" style="--d:760ms">
-        <div>
-          <p class="flow__no">04</p>
-          <h3 class="flow__title">Отгрузка</h3>
-          <p class="flow__text">Забираете партию со&nbsp;склада в&nbsp;Москве в&nbsp;согласованный день.</p>
-        </div>
-      </li>
-
-    </ol>
-  </section>
+  <!-- Блок процесса сотрудничества убран по ТЗ главная 9.
+       Стили .flow остались в site.css — вернуть блок можно
+       разметкой, без вёрстки заново. -->
 
   <!-- ══════════ ПЕРСОНАЛЬНЫЙ ПОДБОР ══════════
        Каталог целиком живёт на catalog.html и на главную
@@ -711,12 +697,11 @@
        прямо в тексте, иначе пойдут запросы цен на одежду.
        Плитки — заглушки до фотосъёмки. -->
   <section class="bay clothes" id="clothes">
-    <p class="rule"><b>Что шьют из нашего полотна</b><span>изделия не&nbsp;продаём</span></p>
+    <p class="rule"><b>Что шьют из нашего полотна</b></p>
 
     <div class="clothes__intro rise">
       <h2>Полотно в&nbsp;готовых изделиях</h2>
-      <p>Здесь показано, что шьём мы&nbsp;в&nbsp;качестве образцов&nbsp;— чтобы было понятно, как полотно ведёт себя в&nbsp;изделии.</p>
-      <p class="clothes__note">Готовую одежду мы&nbsp;не&nbsp;продаём.</p>
+      <p>Изделия из&nbsp;нашего полотна, предоставленные нашими партнёрами.</p>
     </div>
   </section>
 
@@ -746,11 +731,11 @@
        Возвращена на главную (ТЗ 3.1). Вёрстка и данные — с итерации 2,
        87 цветов Pantone TPG лежат в data/colors.json. -->
   <section class="bay colors" id="colors">
-    <p class="rule"><b>Цветовая карта</b><span>Выкрас под&nbsp;заказ · партия от&nbsp;100&nbsp;кг</span></p>
+    <p class="rule"><b>Цветовая карта</b><span>Выкрас под&nbsp;заказ</span></p>
 
     <div class="colors__intro rise">
       <h2>Выберите цвет&nbsp;— подберём полотно</h2>
-      <p>Любое полотно из&nbsp;каталога красим по&nbsp;этой карте. Нажмите оттенок&nbsp;— предложим выбрать ткань и&nbsp;откроем её карточку с&nbsp;этим цветом.</p>
+      <p>Выбирайте цвет полотна по&nbsp;пантону&nbsp;— изготовим полотно в&nbsp;выбранном вами цвете.</p>
       <p class="warn">Экран передаёт оттенок приблизительно. Точный цвет определяет номер Pantone&nbsp;— перед запуском партии подтверждайте его по&nbsp;физическому образцу.</p>
     </div>
 
@@ -759,14 +744,15 @@
 
   <!-- ══════════ О КОМПАНИИ ══════════ -->
   <section class="bay about" id="about">
-    <p class="rule"><b>О&nbsp;компании</b><span>Москва&nbsp;— Турция</span></p>
+    <p class="rule"><b>О&nbsp;компании</b></p>
     <h2 class="about__lead rise">Четверть века<br>мы задаём <em>стандарт</em><br>трикотажного рынка.</h2>
     <div class="about__text rise" style="--d:120ms">
-      <p>Свои фабрики по&nbsp;производству и&nbsp;крашению трикотажного полотна мы&nbsp;открыли в&nbsp;<strong>Турции в&nbsp;1999&nbsp;году</strong>. Современное оборудование, четверть века практики и&nbsp;собственная технологическая база вывели нас в&nbsp;число лидеров отрасли в&nbsp;стране с&nbsp;вековыми традициями текстиля.</p>
-      <p>Мы&nbsp;<strong>не&nbsp;используем посредников</strong>, а&nbsp;значит&nbsp;— полностью управляем себестоимостью, сроками и&nbsp;качеством.</p>
-      <p>Производственные мощности и&nbsp;команда технологов позволяют выпускать полотно <strong>любого качества и&nbsp;с&nbsp;любыми характеристиками</strong>&nbsp;— под конкретную задачу, а&nbsp;не&nbsp;из&nbsp;того, что нашлось на&nbsp;складе.</p>
-      <p>Рынок изменился: торговля на&nbsp;маркетплейсах требует быстрого доступа к&nbsp;нужной ткани и&nbsp;стабильного качества. Поэтому больше <strong>пяти лет назад</strong> мы&nbsp;открыли склад в&nbsp;Москве&nbsp;— с&nbsp;широким ассортиментом полотна и&nbsp;цветов и&nbsp;менеджерами, которые ведут заказ от&nbsp;расчёта до&nbsp;отгрузки.</p>
-      <p>Наша экспертиза востребована как частными предпринимателями, так и&nbsp;<strong>B2B-клиентами</strong>, нуждающимися в&nbsp;бесперебойных поставках. Выбирая «Салтекс», вы&nbsp;выбираете надёжность и&nbsp;долгосрочное партнёрство.</p>
+      <!-- Текст заказчика из буклета, ТЗ главная 16. Разбит на абзацы
+           и поправлена пунктуация, формулировки не менялись. -->
+      <p>Наша компания открыла в&nbsp;Турции свои фабрики по&nbsp;производству трикотажных тканей и&nbsp;крашению в&nbsp;<strong>1999&nbsp;году</strong> и&nbsp;благодаря современному технологическому развитию, а&nbsp;также многолетнему опыту и&nbsp;техническим знаниям стала одним из&nbsp;лидеров отрасли в&nbsp;Турции.</p>
+      <p>В&nbsp;рамках нашего производственного ассортимента и&nbsp;в&nbsp;соответствии с&nbsp;вашими потребностями мы&nbsp;с&nbsp;удовольствием станем вашим партнёром по&nbsp;решениям, производя продукцию <strong>любого качества и&nbsp;с&nbsp;любыми характеристиками</strong>, с&nbsp;высокой производственной мощностью и&nbsp;профессиональной командой, отвечающей вашим требованиям.</p>
+      <p>Развивающиеся и&nbsp;меняющиеся рыночные условия, в&nbsp;особенности условия продаж через маркетплейсы, требуют быстрого доступа к&nbsp;подходящим тканям и&nbsp;качеству для индустрии готовой одежды.</p>
+      <p>Думая о&nbsp;вашем удобстве, уже <strong>более 5&nbsp;лет</strong> мы&nbsp;открыли склад в&nbsp;Москве с&nbsp;широким ассортиментом продукции и&nbsp;цветов, и&nbsp;команда профессиональных менеджеров обслуживает вас, уважаемые производители.</p>
     </div>
     <dl class="figures">
       <div class="rise"><dt>1999<sup>—</sup></dt><dd>год запуска собственных фабрик в&nbsp;Турции</dd></div>
@@ -794,14 +780,20 @@
         </dd>
       </div>
       <div class="rise" style="--d:160ms">
-        <dt>Адрес склада</dt>
-        <dd class="plain">Московская область, Томилино,<br>Новорязанское шоссе, 25-й&nbsp;километр, 5к37<br>Склад Е8</dd>
+        <dt>Адрес офиса и&nbsp;склада</dt>
+        <dd class="plain">Московская область, Томилино,<br>Новорязанское шоссе, 25-й&nbsp;километр, 5к37<br>Офис и&nbsp;склад Е8</dd>
       </div>
       <div class="rise" style="--d:240ms">
         <dt>Отгрузка</dt>
         <dd class="plain">Только самовывоз<br>со&nbsp;склада в&nbsp;Москве</dd>
       </div>
     </dl>
+    <!-- ТЗ главная 19: фотография склада под адресом.
+         Заглушка до снимка от заказчика — меняется на <img>. -->
+    <figure class="contacts__photo rise" style="--d:120ms">
+      <div class="contacts__photo-ph">фото склада</div>
+    </figure>
+
     <div class="contacts__map rise" style="--d:200ms" id="map-block">
       <div class="contacts__map-facade" id="map-facade">
         <i aria-hidden="true"></i>
@@ -812,7 +804,7 @@
         </p>
         <button class="btn" type="button" id="map-load"><span>Показать карту</span></button>
       </div>
-      <span>Склад Е8 · Томилино</span>
+      <span>Офис и склад Е8 · Томилино</span>
     </div>
   </section>
 
@@ -969,8 +961,10 @@
   /* Две строки подписи: сверху номер в палитре компании — по нему
      заказывают, снизу пантон — по нему сверяют оттенок. Русские
      названия не показываем, цвет определяет номер, а не слово. */
-  wrap.innerHTML = palette.colors.map(function(c){
-    return '<button class="swatch" type="button"' +
+  /* swatch--demo — единственный образец с эффектом футболки
+     (ТЗ главная 14): заказчик смотрит на одном, потом включим всем. */
+  wrap.innerHTML = palette.colors.map(function(c, n){
+    return '<button class="swatch' + (n === 0 ? ' swatch--demo' : '') + '" type="button"' +
       ' data-code="' + S.esc(c.k) + '"' +
       ' data-num="' + S.esc(c.p) + '"' +
       ' style="--c:' + S.esc(c.h) + '"' +
@@ -1050,6 +1044,27 @@
     location.href = 'product.html?id=' + encodeURIComponent(item.dataset.id) +
                     '&color=' + encodeURIComponent(current);
   });
+})();
+
+/* ══════════════ СЛАЙД-ШОУ ПЕРВОГО ЭКРАНА ══════════════
+   Смена кадра раз в 6 секунд (ТЗ главная 20). В фоновой вкладке
+   не переключаем: иначе человек вернётся и увидит рывок. Тем, кто
+   выключил анимации в системе, показываем один первый кадр. */
+(function(){
+  var box = document.getElementById('hero-slides');
+  if (!box) return;
+
+  var slides = box.querySelectorAll('.hero__slide');
+  var reduced = window.SALTEKS && window.SALTEKS.reduced;
+  if (slides.length < 2 || reduced) return;
+
+  var i = 0;
+  setInterval(function(){
+    if (document.hidden) return;
+    slides[i].classList.remove('is-on');
+    i = (i + 1) % slides.length;
+    slides[i].classList.add('is-on');
+  }, 6000);
 })();
 </script>
 </body>

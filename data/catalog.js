@@ -16,7 +16,7 @@ window.SALTEKS_DATA = {
     { "id": "ribana",      "name": "Рибана",          "roll_kg_avg": 18, "order": 5 },
     { "id": "interlok",    "name": "Интерлок",        "roll_kg_avg": 20, "order": 6, "on_order": true },
     { "id": "pike",        "name": "Пике",            "roll_kg_avg": 20, "order": 7, "on_order": true },
-    { "id": "kulirka-nab", "name": "Кулирка набивка", "roll_kg_avg": 20, "order": 8, "on_order": true }
+    { "id": "kulirka-nab", "name": "Кулирка набивка", "roll_kg_avg": 20, "order": 8 }
   ],
 
   "products": [
@@ -213,7 +213,7 @@ window.SALTEKS_DATA = {
       "roll_kg_avg": 18,
       "price": { "base": 11.00, "bulk": null, "bulk_from_kg": null },
       "photo": "img/fabric/KSH-VC-420.jpg",
-      "photos": ["img/fabric/KSH-VC-420-2.jpg"]
+      "colors": false
     },
     {
       "id": "KSH-3001-240",
@@ -229,7 +229,7 @@ window.SALTEKS_DATA = {
       "roll_kg_avg": 18,
       "price": { "base": 11.00, "bulk": null, "bulk_from_kg": null },
       "photo": "img/fabric/KSH-3001-240.jpg",
-      "photos": ["img/fabric/KSH-3001-240-2.jpg"]
+      "colors": false
     },
     {
       "id": "KSH-KAR-220",
@@ -254,14 +254,15 @@ window.SALTEKS_DATA = {
       "name": "Рибана с лайкрой",
       "density": 220,
       "density_label": "220",
-      "quality": "карде",
+      "quality": "компакт пенье",
       "composition": "95% хб + 5% лайкра",
       "width": "85×2",
       "form": "пачка",
       "m_per_kg": 2.0,
       "roll_kg_avg": 18,
       "price": { "base": 7.30, "bulk": null, "bulk_from_kg": null },
-      "photo": "img/fabric/RIB-LAI-220.jpg"
+      "photo": "img/fabric/RIB-LAI-220.jpg",
+      "colors": false
     },
     {
       "id": "RIB-NCH-250",
@@ -277,7 +278,36 @@ window.SALTEKS_DATA = {
       "roll_kg_avg": 18,
       "price": { "base": 5.80, "bulk": 5.50, "bulk_from_kg": 250 },
       "photo": "img/fabric/RIB-NCH-250.jpg",
-      "photos": ["img/fabric/RIB-NCH-250-2.jpg"]
+      "colors": false
+    },
+
+    {
+      "id": "KUL-NAB-150",
+      "type": "kulirka-nab",
+      "name": "Кулирка с набивкой 100% х/б",
+      "density": 148,
+      "density_label": "145–150",
+      "quality": "карде",
+      "composition": "100% хб",
+      "width": "185",
+      "form": "рулон",
+      "m_per_kg": 3.6,
+      "roll_kg_avg": 20,
+      "price": { "base": 0, "bulk": null, "bulk_from_kg": null },
+      "photo": "img/fabric/KUL-NAB-150.jpg",
+      "colors": false,
+      "prints": [
+        { "n": "Рисунок 1",  "f": "img/fabric/KUL-NAB-150-p01.jpg" },
+        { "n": "Рисунок 2",  "f": "img/fabric/KUL-NAB-150-p02.jpg" },
+        { "n": "Рисунок 3",  "f": "img/fabric/KUL-NAB-150-p03.jpg" },
+        { "n": "Рисунок 4",  "f": "img/fabric/KUL-NAB-150-p04.jpg" },
+        { "n": "Рисунок 5",  "f": "img/fabric/KUL-NAB-150-p05.jpg" },
+        { "n": "Рисунок 6",  "f": "img/fabric/KUL-NAB-150-p06.jpg" },
+        { "n": "Рисунок 7",  "f": "img/fabric/KUL-NAB-150-p07.jpg" },
+        { "n": "Рисунок 8",  "f": "img/fabric/KUL-NAB-150-p08.jpg" },
+        { "n": "Рисунок 9",  "f": "img/fabric/KUL-NAB-150-p09.jpg" },
+        { "n": "Рисунок 10", "f": "img/fabric/KUL-NAB-150-p10.jpg" }
+      ]
     }
   ]
 }

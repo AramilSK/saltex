@@ -90,7 +90,10 @@
     /* ── Заголовок ── */
     document.getElementById('title').textContent = p.name;
     var sub = document.getElementById('sub');
-    sub.innerHTML = S.esc(p.typeName) + ' · арт. ' + S.esc(p.sku || p.id);
+    /* Артикул с карточки убран (правка 25.09): в подзаголовке
+       остаётся только вид полотна. У набивки его место занимает
+       название выбранного рисунка. */
+    sub.textContent = p.typeName;
 
     /* ── Характеристики ──
        Строки, которых нет в прайсе, не показываем прочерком:
@@ -102,9 +105,8 @@
       ['Качество',      p.quality],
       ['Плотность',     p.densityLabel + ' г/м²'],
       ['Ширина',        p.width === '—' ? null : p.width + ' см'],
-      ['Отгрузка',      p.form === 'пачка' ? 'пачками' : 'рулонами'],
-      ['Метров в 1 кг', p.mPerKg ? S.num1(p.mPerKg) : null],
-      ['Артикул',       p.sku || p.id]
+      ['Упаковка',      p.form === 'пачка' ? 'пачками' : 'рулонами'],
+      ['Метров в 1 кг', p.mPerKg ? S.num1(p.mPerKg) : null]
     ];
     document.getElementById('spec').innerHTML = rows
       .filter(function(r){ return r[1] && r[1] !== '—'; })
@@ -122,9 +124,56 @@
     var pickLabel = document.getElementById('colors-pick');
     var moreBtn = document.getElementById('colors-more');
     var palette = (window.SALTEKS_COLORS && window.SALTEKS_COLORS.colors) || [];
+
+    /* У ткани свой набор оттенков (ТЗ каталог 8): списки лежат
+       в colors.json ключом byFabric, ключ — артикул позиции.
+       Списка нет — показываем всю карту, как раньше. */
+    var byFabric = (window.SALTEKS_COLORS && window.SALTEKS_COLORS.byFabric) || {};
+    var ownColors = byFabric[p.id];
+    if (ownColors && ownColors.length) {
+      palette = palette.filter(function(c){
+        return ownColors.indexOf(String(c.p)) !== -1;
+      });
+    }
     var SHOWN = 16;      /* сколько оттенков видно до «показать ещё» */
 
-    if (box && sw && palette.length) {
+    /* ── Набивка: образцы рисунка вместо цветов (ТЗ каталог 14) ──
+       Нажатие меняет фотографию в карточке, а название рисунка
+       работает артикулом — так просил заказчик. */
+    if (p.prints && p.prints.length && box && sw) {
+      box.classList.add('prod__colors--prints');
+      var head = box.querySelector('.prod__h');
+      if (head && head.firstChild) head.firstChild.nodeValue = 'Рисунок ';
+      var cnt = document.getElementById('colors-count');
+      if (cnt) cnt.textContent = p.prints.length;
+      pickLabel.textContent = 'Рисунок не выбран';
+
+      sw.innerHTML = p.prints.map(function(pr){
+        return '<button class="prod__sw prod__sw--print" type="button"' +
+               ' data-print="' + S.esc(pr.f) + '" data-name="' + S.esc(pr.n) + '"' +
+               ' style="background-image:url(' + S.esc(pr.f) + ')"' +
+               ' aria-pressed="false" title="' + S.esc(pr.n) + '">' +
+               '<span class="vh">' + S.esc(pr.n) + '</span></button>';
+      }).join('');
+
+      sw.addEventListener('click', function(e){
+        var b = e.target.closest('.prod__sw--print');
+        if (!b) return;
+        sw.querySelectorAll('.prod__sw--print').forEach(function(o){
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+        shot.innerHTML = texture() +
+          '<img src="' + S.esc(b.dataset.print) + '" alt="' +
+          S.esc(p.name + ' — ' + b.dataset.name) + '" decoding="async">';
+        pickLabel.textContent = 'Выбран ' + b.dataset.name;
+        pickLabel.classList.add('is-set');
+        var subLine = document.getElementById('sub');
+        if (subLine) subLine.innerHTML = S.esc(p.typeName) + ' · ' + S.esc(b.dataset.name);
+      });
+
+    /* У части позиций своих цветов нет — палитру там не показываем
+       целиком, вместе с припиской про менеджера (ТЗ каталог 13). */
+    } else if (box && sw && palette.length && p.colors !== false) {
       var wanted = new URLSearchParams(location.search).get('color') || '';
 
       sw.innerHTML = palette.map(function(c){
@@ -183,7 +232,7 @@
         function labelMore(){
           moreBtn.textContent = box.classList.contains('is-open')
             ? 'Свернуть'
-            : 'Показать ещё ' + (palette.length - SHOWN);
+            : 'Показать все ' + palette.length;
         }
         labelMore();
 
@@ -196,65 +245,85 @@
       box.hidden = true;
     }
 
-    /* ── Калькулятор ── */
-    var sel = document.getElementById('mass');
-    var own = document.getElementById('mass-own');
-    var ownRow = document.getElementById('mass-own-row');
-    var roll = p.roll_kg_avg;
+    /* ── Стрелки под фотографией (ТЗ каталог 5) ──
+       Листают ряд на ширину видимой части. Если оттенки и так
+       помещаются целиком — кнопки прячем, чтобы не мозолили глаз.
+       В раскрытой палитре они не нужны, их убирает CSS. */
+    var prevBtn = document.getElementById('colors-prev');
+    var nextBtn = document.getElementById('colors-next');
+    if (prevBtn && nextBtn && sw) {
+      /* Замер ширины делаем не только сразу: на первом проходе
+         раскладка ещё не готова, scrollWidth равен clientWidth,
+         и кнопка «вперёд» гасла навсегда. Поэтому пересчитываем
+         в следующем кадре и ещё раз, когда подгрузятся шрифты. */
+      var syncArrows = function(){
+        var max = sw.scrollWidth - sw.clientWidth - 1;
+        prevBtn.disabled = sw.scrollLeft <= 0;
+        nextBtn.disabled = max <= 0 || sw.scrollLeft >= max;
+      };
 
-    /* Шаг — вес рулона из прайса: клиент считает партию рулонами,
-       а не абстрактными килограммами. Подпись берётся из самого
-       множителя, а не из позиции в списке — иначе «110 кг»
-       подписывалось как «4 рул.», хотя это пять рулонов.
+      /* Листаем на ширину видимой части. Плавную прокрутку
+         выполняют не все окружения, поэтому через треть секунды
+         проверяем, сдвинулся ли ряд, и при необходимости ставим
+         позицию сразу — кнопка обязана работать всегда. */
+      function slide(dir){
+        var from = sw.scrollLeft;
+        var to = Math.max(0, Math.min(from + dir * sw.clientWidth,
+                                      sw.scrollWidth - sw.clientWidth));
+        if (sw.scrollBy) sw.scrollBy({ left: to - from, behavior: S.reduced ? 'auto' : 'smooth' });
+        else sw.scrollLeft = to;
 
-       Часть полотна отгружается пачками, а не рулонами: у таких
-       позиций в прайсе ширина записана как «60*2 (пачка)».
-       Формулировки меняются вместе с формой отгрузки (ТЗ 2.3). */
-    var pack = p.form === 'пачка';
-    var one  = pack ? ' (пачка)' : ' (рулон)';
-    var many = pack ? ' пач.' : ' рул.';
-
-    var ROLLS = [1, 2, 3, 5, 10];
-    sel.innerHTML = ROLLS.map(function(n){
-      return '<option value="' + (roll * n) + '">' +
-             S.num0(roll * n) + ' кг' +
-             (n === 1 ? one : ' (' + n + many + ')') +
-             '</option>';
-    }).join('') + '<option value="own">Свой вес…</option>';
-
-    /* Подписи строк калькулятора: «метров в рулоне» для пачки —
-       неправда, там метраж считается по пачке. */
-    var rowM    = document.getElementById('c-rollm');
-    var rowCost = document.getElementById('c-roll');
-    if (rowM && rowM.previousElementSibling) {
-      rowM.previousElementSibling.textContent = pack ? 'Метров в пачке' : 'Метров в рулоне';
-    }
-    if (rowCost && rowCost.previousElementSibling) {
-      rowCost.previousElementSibling.textContent = pack ? 'Стоимость пачки' : 'Стоимость рулона';
-    }
-
-    mass = roll;
-
-    sel.addEventListener('change', function(){
-      if (sel.value === 'own') {
-        ownRow.hidden = false;
-        own.value = own.value || String(roll);
-        mass = Math.max(1, Number(own.value) || roll);
-        own.focus();
-      } else {
-        ownRow.hidden = true;
-        mass = Number(sel.value) || roll;
+        setTimeout(function(){
+          if (Math.abs(sw.scrollLeft - from) < 2 && Math.abs(to - from) > 2) {
+            var prevBehavior = sw.style.scrollBehavior;
+            sw.style.scrollBehavior = 'auto';
+            sw.scrollLeft = to;
+            sw.style.scrollBehavior = prevBehavior;
+          }
+          syncArrows();
+        }, 320);
       }
-      paint();
-    });
 
-    own.addEventListener('input', function(){
-      mass = Math.max(1, Number(own.value) || 0);
-      paint();
-    });
+      prevBtn.addEventListener('click', function(){ slide(-1); });
+      nextBtn.addEventListener('click', function(){ slide(1); });
+      sw.addEventListener('scroll', syncArrows);
+      addEventListener('resize', syncArrows);
+      if (moreBtn) moreBtn.addEventListener('click', function(){ setTimeout(syncArrows, 50); });
+
+      syncArrows();
+      requestAnimationFrame(syncArrows);
+      setTimeout(syncArrows, 500);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncArrows);
+    }
+
+    /* ── Калькулятор: метры → килограммы ──
+       Цен нет, поэтому вопрос у калькулятора один: сколько
+       весит нужный метраж (ТЗ каталог 4). */
+    var metres = document.getElementById('metres');
+    var rollM = (p.roll_kg_avg && p.mPerKg) ? p.roll_kg_avg * p.mPerKg : 0;
+
+    /* Часть полотна отгружается пачками, а не рулонами: у таких
+       позиций в прайсе ширина записана как «60*2 (пачка)».
+       Формулировка строки меняется вместе с формой отгрузки. */
+    var pack = p.form === 'пачка';
+    var rollLabel = document.getElementById('c-rollm-label');
+    if (rollLabel) rollLabel.textContent = pack ? 'Метров в пачке' : 'Метров в рулоне';
+
+    var mpkBox = document.getElementById('c-mpk');
+    if (mpkBox) mpkBox.textContent = p.mPerKg ? S.num1(p.mPerKg) + ' м' : '—';
+
+    var rollBox = document.getElementById('c-rollm');
+    if (rollBox) rollBox.textContent = rollM ? '≈ ' + S.num0(rollM) + ' м' : '—';
+
+    /* Без пм/кг перевод невозможен — убираем таблицу целиком,
+       а не оставляем строки с прочерками. */
+    var calcRows = document.getElementById('calc-rows');
+    if (calcRows) calcRows.hidden = !p.mPerKg;
 
     current = p;
     paint();
+
+    if (metres) metres.addEventListener('input', paint);
 
     /* ── В корзину ──
        Кладём тот вес, который сейчас стоит в калькуляторе:
@@ -265,7 +334,7 @@
     toCart.addEventListener('click', function(){
       S.cart.add(p.id, mass, color);
       added.hidden = false;
-      added.textContent = 'Добавлено: ' + S.num0(mass) + ' кг. Всего в корзине — ' +
+      added.textContent = 'Добавлено: ' + S.num0(mass) + ' кг. Всего в запросе — ' +
         S.cart.count() + ' ' + S.cart.plural(S.cart.count(), 'позиция', 'позиции', 'позиций') + '.';
       toCart.querySelector('span').textContent = 'Добавить ещё';
     });
@@ -301,43 +370,27 @@
     root.hidden = false;
   }
 
-  /* Пересчёт всех цифр калькулятора. Вызывается при смене
-     массы и при обновлении курса — формулы в core.js одни
-     и те же для каталога и карточки. */
+  /* Перевод метража в вес. Цены и курс ЦБ из расчёта убраны
+     (ТЗ каталог 3, 4, 16), поэтому формул из core.js здесь
+     больше нет — одно деление на метры в килограмме. */
   function paint(){
     if (!current) return;
-    var rate = S.rate();
-    var ok = S.rateOk();
-    /* Градация выбирается по введённой массе: перевалило за порог —
-       калькулятор сам переходит на оптовую цену (ТЗ 2.4). */
-    var c = S.calc(current, rate, mass);
 
-    var usdNote = S.usd(c.usdKg) + ' за кг · курс ' + S.rub(rate);
-    if (c.hasBulk) {
-      usdNote += c.isBulk
-        ? ' · цена от ' + c.bulkFrom + ' кг'
-        : ' · от ' + c.bulkFrom + ' кг дешевле';
+    var field = document.getElementById('metres');
+    var m = Math.max(1, Number(field && field.value) || 0);
+    mass = current.mPerKg ? m / current.mPerKg : 0;
+
+    var kgBox = document.getElementById('c-kg');
+    if (kgBox) kgBox.textContent = mass ? '≈ ' + S.num0(mass) + ' кг' : '—';
+
+    var note = document.getElementById('c-mass');
+    if (note) {
+      note.textContent = mass
+        ? S.num0(m) + ' м ≈ ' + S.num0(mass) + ' кг · отгрузка ' +
+          (current.form === 'пачка' ? 'пачками' : 'рулонами')
+        : 'Вес уточняйте у менеджера: метраж в килограмме у этой позиции не указан.';
     }
-
-    document.getElementById('c-kg').innerHTML   = (ok ? '' : '≈ ') + S.rub(c.kg) + ' <small>/кг</small>';
-    document.getElementById('c-usd').textContent = usdNote;
-    document.getElementById('c-m').textContent   = c.m ? S.rub(c.m) + ' / м' : '—';
-    document.getElementById('c-rollm').textContent = c.rollM ? '≈ ' + S.num0(c.rollM) + ' м' : '—';
-    document.getElementById('c-roll').textContent  = '≈ ' + S.rub0(c.rollRub);
-    /* «примерно» рядом с массой — ТЗ 2.7 */
-    document.getElementById('c-mass').textContent  = 'Основной товар: примерно ' + S.num0(mass) + ' кг';
-    document.getElementById('c-total').textContent = S.rub0(c.kg * mass);
-
-    /* Позиции без пм/кг считаются только по килограммам: строки
-       про метры и рулон скрываем целиком, а не ставим прочерк (ТЗ 2.8). */
-    ['c-m','c-rollm','c-roll'].forEach(function(idName){
-      var el = document.getElementById(idName);
-      var row = el && el.closest ? el.closest('.calc__row') : null;
-      if (row) row.hidden = !current.mPerKg;
-    });
   }
-
-  document.addEventListener('saltex:fx', paint);
 
   /* ── Загрузка ── */
   C.load().then(function(data){

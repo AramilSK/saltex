@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Корзина — САЛТЕКС</title>
-<meta name="description" content="Отобранные позиции трикотажного полотна: вес, цена за килограмм и итог по курсу ЦБ +5%. Отправьте список менеджеру — рассчитаем партию.">
+<title>Запрос менеджеру — САЛТЕКС</title>
+<meta name="description" content="Отобранные позиции трикотажного полотна: метраж и вес партии. Отправьте список менеджеру — рассчитаем и подтвердим наличие.">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
@@ -72,7 +72,6 @@
 <header class="masthead">
   <a class="masthead__logo" href="index.html" aria-label="САЛТЕКС — трикотажные полотна, на главную">
     <img src="assets/img/logo-emblem-256.png" alt="САЛТЕКС" width="256" height="256" decoding="async">
-    <span class="masthead__descriptor">Трикотажные полотна</span>
   </a>
 
   <nav class="masthead__nav" id="nav" aria-label="Основная навигация">
@@ -95,7 +94,7 @@
       <span class="btn-icon__num">+7 (985) 220-13-54</span>
     </a>
 
-    <a class="btn-icon btn-icon--cart" href="cart.html" aria-label="Корзина">
+    <a class="btn-icon btn-icon--cart" href="cart.html" aria-label="Список запроса">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4V3a5 5 0 0 1 10 0v1h3v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4h3Zm2 0h6V3a3 3 0 0 0-6 0v1ZM6 6v13h12V6H6Z"/></svg>
       <span class="btn-icon__badge" data-cart-count hidden>0</span>
     </a>
@@ -108,7 +107,7 @@
 
 <main class="cart bay" id="cart">
   <p class="rule">
-    <b>Корзина</b>
+    <b>Запрос менеджеру</b>
     <span class="cat__count" id="count">загружаем…</span>
   </p>
 
@@ -119,8 +118,8 @@
 
   <!-- ── Пустая корзина ── -->
   <div class="cat__note" id="empty" hidden style="grid-column:1 / 8">
-    <p class="cat__note-title">В&nbsp;корзине пока пусто</p>
-    <p class="cat__note-text">Откройте каталог и&nbsp;добавьте полотна, которые интересуют. Корзина запоминает выбор&nbsp;— можно вернуться позже.</p>
+    <p class="cat__note-title">В&nbsp;запросе пока пусто</p>
+    <p class="cat__note-text">Откройте каталог и&nbsp;добавьте полотна, которые интересуют. Список запоминает выбор&nbsp;— можно вернуться позже.</p>
     <a class="btn btn--ochre" href="catalog.html"><span>Перейти в каталог</span></a>
   </div>
 
@@ -131,20 +130,16 @@
   <aside class="cart__side" id="side" hidden>
     <div class="cart__total">
       <p class="cart__total-row"><span>Позиций</span><b id="t-count">0</b></p>
-      <p class="cart__total-row"><span>Общий вес</span><b id="t-kg">0 кг</b></p>
-      <p class="cart__total-row"><span>Метров ≈</span><b id="t-m">0 м</b></p>
-      <div class="cart__grand">
-        <span>Итого</span>
-        <b id="t-sum">0 ₽</b>
-      </div>
-      <p class="calc__note">* Ориентировочно, по&nbsp;курсу ЦБ&nbsp;+5%. Точную цену, скидку от&nbsp;объёма и&nbsp;срок отгрузки подтверждает менеджер.</p>
-      <button class="btn btn--ochre btn--wide" type="button" id="send"><span>Отправить заявку</span></button>
+      <p class="cart__total-row"><span>Всего метров</span><b id="t-m">0 м</b></p>
+      <p class="cart__total-row"><span>Вес ≈</span><b id="t-kg">0 кг</b></p>
+      <p class="calc__note">Цену, наличие и&nbsp;срок отгрузки подтверждает менеджер после запроса.</p>
+      <button class="btn btn--ochre btn--wide" type="button" id="send"><span>Отправить запрос менеджеру</span></button>
       <a class="btn btn--ghost btn--wide" href="catalog.html"><span>Добавить ещё</span></a>
 
       <!-- Очистка в два шага: список собирают долго, а стереть его
            случайным кликом можно мгновенно. -->
       <div class="cart__clear" id="clear-box">
-        <button class="btn btn--ghost btn--wide" type="button" id="clear"><span>Очистить корзину</span></button>
+        <button class="btn btn--ghost btn--wide" type="button" id="clear"><span>Очистить список</span></button>
         <div class="cart__confirm" id="confirm" hidden>
           <p class="cart__confirm-text">Удалить все позиции? Отменить не&nbsp;получится.</p>
           <div class="cart__confirm-row">
@@ -157,7 +152,7 @@
   </aside>
 
   <div class="cat__note" id="fail" hidden style="grid-column:1 / 8">
-    <p class="cat__note-title">Корзина не&nbsp;загрузилась</p>
+    <p class="cat__note-title">Список не&nbsp;загрузился</p>
     <p class="cat__note-text">Не&nbsp;удалось получить данные каталога. Обновите страницу&nbsp;— или напишите менеджеру, соберём заявку вручную.</p>
     <button class="btn btn--ochre" type="button" data-lead="Корзина не открылась на сайте"><span>Написать менеджеру</span></button>
   </div>

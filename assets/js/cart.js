@@ -46,11 +46,9 @@
     return '';
   }
 
-  function rowHTML(p, kg, rate){
-    /* Цена по массе именно этой строки: набрал больше порога —
-       строка считается по оптовой цене. */
-    var c = S.calc(p, rate, kg);
-    var sum = c.kg * kg;
+  /* Цен в списке нет (ТЗ каталог 3 и 17): корзина собирает запрос
+     менеджеру — позиции, цвет и объём, а цену называет менеджер. */
+  function rowHTML(p, kg){
     var meters = p.mPerKg ? kg * p.mPerKg : 0;
 
     /* Состав и метраж могут быть ещё не заполнены — собираем
@@ -83,23 +81,25 @@
           S.esc(p.name) + '</a>' +
         colorLine +
         '<p class="crow__spec">' + S.esc(spec) + '</p>' +
-        '<p class="crow__unit">' + S.rub(c.kg) + ' / кг' +
-          (c.m ? ' · ' + S.rub(c.m) + ' / м' : '') + '</p>' +
       '</div>' +
 
+      /* Количество задаётся в метрах, вес показываем справочно.
+         Внутри корзина по-прежнему хранит килограммы: по ним
+         считается рулон и по ним работает склад. */
       '<div class="crow__qty">' +
-        '<label class="vh" for="q-' + S.esc(p.id) + '">Вес, кг</label>' +
+        '<label class="vh" for="q-' + S.esc(p.id) + '">' +
+          (p.mPerKg ? 'Метраж, м' : 'Вес, кг') + '</label>' +
         '<div class="crow__stepper">' +
           '<button type="button" data-step="-1" data-id="' + S.esc(p.id) + '" aria-label="Убрать рулон">−</button>' +
           '<input id="q-' + S.esc(p.id) + '" type="number" min="1" step="1" inputmode="numeric"' +
-            ' value="' + kg + '" data-qty="' + S.esc(p.id) + '">' +
+            ' value="' + (p.mPerKg ? Math.round(meters) : kg) + '" data-qty="' + S.esc(p.id) + '">' +
           '<button type="button" data-step="1" data-id="' + S.esc(p.id) + '" aria-label="Добавить рулон">+</button>' +
         '</div>' +
-        '<p class="crow__hint">кг' + (meters ? ' · ≈ ' + S.num0(meters) + ' м' : '') + '</p>' +
+        '<p class="crow__hint">' +
+          (p.mPerKg ? 'м · ≈ ' + S.num0(kg) + ' кг' : 'кг') + '</p>' +
       '</div>' +
 
       '<div class="crow__sum">' +
-        '<b>' + S.rub0(sum) + '</b>' +
         '<button class="crow__drop" type="button" data-drop="' + S.esc(p.id) + '">Удалить</button>' +
       '</div>' +
     '</div>';
@@ -107,7 +107,6 @@
 
   function render(){
     var items = S.cart.items();
-    var rate = S.rate();
 
     /* Позиция могла уйти из выгрузки, пока лежала в корзине.
        Молча её не выбрасываем — но и посчитать не можем. */
@@ -124,7 +123,7 @@
     }
 
     list.innerHTML = known.map(function(r){
-      return rowHTML(byId[r.id], r.kg, rate);
+      return rowHTML(byId[r.id], r.kg);
     }).join('') + (lost
       ? '<p class="cart__lost">' + lost + ' ' +
         S.cart.plural(lost, 'позиция больше не значится', 'позиции больше не значатся',
@@ -132,18 +131,16 @@
         ' в каталоге — их убрали из расчёта. Уточните наличие у менеджера.</p>'
       : '');
 
-    var totalKg = 0, totalM = 0, totalSum = 0;
+    var totalKg = 0, totalM = 0;
     known.forEach(function(r){
       var p = byId[r.id];
-      totalKg  += r.kg;
-      totalM   += p.mPerKg ? r.kg * p.mPerKg : 0;
-      totalSum += S.calc(p, rate, r.kg).kg * r.kg;
+      totalKg += r.kg;
+      totalM  += p.mPerKg ? r.kg * p.mPerKg : 0;
     });
 
     document.getElementById('t-count').textContent = known.length;
     document.getElementById('t-kg').textContent  = S.num0(totalKg) + ' кг';
     document.getElementById('t-m').textContent   = totalM ? S.num0(totalM) + ' м' : '—';
-    document.getElementById('t-sum').textContent = S.rub0(totalSum);
 
     count.innerHTML = '<b>' + known.length + '</b> ' +
       S.cart.plural(known.length, 'позиция', 'позиции', 'позиций');
@@ -167,9 +164,13 @@
   list.addEventListener('change', function(e){
     var input = e.target.closest('[data-qty]');
     if (!input) return;
-    var kg = Math.round(Number(input.value));
-    if (!(kg > 0)) { render(); return; }   /* мусор в поле — откатываем */
-    S.cart.setQty(input.dataset.qty, kg);
+    var p = byId[input.dataset.qty];
+    var val = Number(input.value);
+    if (!(val > 0)) { render(); return; }   /* мусор в поле — откатываем */
+    /* В поле метры, в корзине килограммы — переводим по пм/кг
+       позиции. Без пм/кг поле так и остаётся весом. */
+    var kg = (p && p.mPerKg) ? val / p.mPerKg : val;
+    S.cart.setQty(input.dataset.qty, Math.max(1, Math.round(kg)));
   });
 
   /* ── Очистка в два шага ──

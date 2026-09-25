@@ -104,7 +104,6 @@
 <header class="masthead">
   <a class="masthead__logo" href="index.html" aria-label="САЛТЕКС — трикотажные полотна, на главную">
     <img src="assets/img/logo-emblem-256.png" alt="САЛТЕКС" width="256" height="256" decoding="async">
-    <span class="masthead__descriptor">Трикотажные полотна</span>
   </a>
 
   <nav class="masthead__nav" id="nav" aria-label="Основная навигация">
@@ -139,9 +138,11 @@
 </header>
 
 <main class="cat bay" id="top">
+  <!-- Счётчик позиций убран по просьбе заказчика (ТЗ каталог 1).
+       Элемента нет — код в catalog.js это переживает, обращения
+       к #count везде под проверкой. -->
   <p class="rule">
     <b>Каталог полотна</b>
-    <span class="cat__count" id="count">загружаем…</span>
   </p>
 
   <!-- Видно, пока в выгрузке стоит source:"mock" — то есть пока
@@ -169,7 +170,9 @@
          Кнопка есть, сетки нет — вместо неё эта панель (ТЗ 1.9). -->
     <div class="cat__note cat__note--order" id="onorder" hidden>
       <p class="cat__note-title" data-order-title>Изготовим под заказ</p>
-      <p class="cat__note-text">Этого полотна нет в текущем прайсе, но мы&nbsp;производим его под&nbsp;заказ. Назовите плотность, состав и&nbsp;объём&nbsp;— рассчитаем и&nbsp;назовём срок.</p>
+      <!-- Первое предложение убрано по ТЗ каталог 15: про прайс
+           на сайте больше не говорим. -->
+      <p class="cat__note-text">Назовите плотность, состав и&nbsp;объём&nbsp;— рассчитаем и&nbsp;назовём срок.</p>
       <button class="btn btn--ochre" type="button" data-lead="Изготовление под заказ" data-lead-title="Подобрать полотно"><span>Обсудить с менеджером</span></button>
     </div>
 

@@ -687,6 +687,23 @@ html.is-loading{ overflow:hidden; }
 .swatch[aria-pressed="true"] i::before{ transform:scale(1); }
 .swatch[aria-pressed="true"] i{ box-shadow:inset 0 0 0 2px var(--ink); transform:scale(.94); }
 .swatch:hover i{ transform:scale(.94); }
+
+/* ТЗ главная 14: при наведении квадрат превращается в футболку
+   и чуть увеличивается. Пока включено на одном образце — заказчик
+   смотрит, как это выглядит; снять ограничение = убрать --demo
+   из селектора и из разметки в конце index.html. */
+.swatch--demo i{
+  transition:transform .3s var(--ease), mask-size .3s var(--ease),
+             -webkit-mask-size .3s var(--ease);
+}
+.swatch--demo:hover i,
+.swatch--demo:focus-visible i{
+  -webkit-mask-image:url(../img/tshirt.svg); mask-image:url(../img/tshirt.svg);
+  -webkit-mask-repeat:no-repeat;  mask-repeat:no-repeat;
+  -webkit-mask-position:center;   mask-position:center;
+  -webkit-mask-size:contain;      mask-size:contain;
+  box-shadow:none; transform:scale(1.12);
+}
 .swatch:focus-visible i{ outline:2px solid var(--ochre); outline-offset:3px; }
 .swatch em{
   font-family:var(--mono); font-size:var(--t-2xs); font-style:normal;
@@ -791,3 +808,103 @@ a[href^="tel:"]{ white-space:nowrap; }
 @media (max-width:560px){
   .masthead__logo img{ width:46px; height:46px; }
 }
+
+/* ══════════════ ПРАВКИ 24.09 ══════════════
+   Шрифты, тёмная шапка и подвал. Собраны одним блоком в конце
+   файла: видно, что изменилось в этом раунде, и правки снимаются
+   целиком, не задевая исходных правил. */
+/* Шапка и подвал чёрные (правка заказчика 25.09): берём тот же
+   чёрный, что и в тексте сайта, а не отдельный оттенок. */
+:root{ --graphite:#111010; }
+
+/* ── Информационный текст жирнее (ТЗ главная 1) ──
+   Golos Text подключён с весами 400–700, поэтому 500 и 600
+   настоящие, а не синтетические. Заголовки не трогаем. */
+body{ font-weight:500; }
+.hero__lede,
+.about__text p,
+.colors__intro p,
+.clothes__intro p,
+.perk p,
+.offer__text,
+.cat__note-text{ font-weight:500; }
+.pcard__spec dd,
+.prod__spec dd,
+.contacts__list dd,
+.crow__spec{ font-weight:600; }
+
+/* ── Тёмно-графитовая шапка, логотип крупнее (ТЗ главная 2) ── */
+.masthead{
+  background:var(--graphite); color:var(--paper);
+  border-bottom-color:var(--graphite);
+  padding-block:1.1rem;
+}
+.masthead__logo{ color:var(--paper); }
+.masthead__logo img{ width:84px; height:84px; }
+.masthead__nav a{ color:var(--paper); }
+.masthead__burger{ border-color:#ffffff4d; color:var(--paper); }
+.btn-icon{ border-color:#ffffff4d; color:var(--paper); }
+.btn-icon:hover,
+.btn-icon:focus-visible{ color:var(--paper); border-color:var(--ochre); }
+.btn-icon--tel{ background:var(--ochre); border-color:var(--ochre); color:var(--ink); }
+.btn-icon--tel:hover,
+.btn-icon--tel:focus-visible{ color:var(--paper); }
+@media (max-width:1024px){
+  .masthead__nav{ border-top-color:#ffffff26; }
+  .masthead__nav a{ border-bottom-color:#ffffff26; }
+}
+@media (max-width:560px){
+  /* Значок MAX на телефоне возвращён (ТЗ главная 3) */
+  .btn-icon--max{ display:inline-flex; }
+  .masthead__logo img{ width:60px; height:60px; }
+}
+
+/* Подвал прижат к низу экрана на коротких страницах (правка 25.09):
+   в списке запроса с одной позицией он подлетал к содержимому,
+   а под ним оставалось пустое поле. */
+body{ min-height:100svh; display:flex; flex-direction:column; }
+body > main{ flex:1 0 auto; }
+body > footer{ flex:0 0 auto; }
+
+/* ── Тёмно-графитовый подвал (ТЗ каталог 10) ── */
+.colophon{
+  background:var(--graphite); color:var(--paper);
+  border-top-color:var(--graphite);
+}
+.colophon p{ color:#ffffffb3; }
+.colophon a{ color:var(--paper); }
+.colophon a:hover{ color:var(--ochre); }
+.colophon .fine{ color:#ffffff73; }
+.certs{ border-bottom-color:#ffffff26; }
+.certs__label{ color:#ffffff8c; }
+/* Логотипы сертификатов лежат чёрными файлами: на тёмном фоне их
+   нужно вывернуть в белое, иначе они просто исчезнут. */
+.certs__row img{ filter:grayscale(1) brightness(0) invert(1); opacity:.6; }
+.certs__row li:hover img,
+.certs__row a:focus-visible img{ filter:grayscale(1) brightness(0) invert(1); opacity:1; }
+
+/* ══════════════ ФОТО СКЛАДА ══════════════
+   ТЗ главная 19: снимок под блоком с адресом. Пока стоит заглушка
+   в том же виде, что и плитки «что шьют» — когда придёт фотография,
+   внутрь figure кладётся <img> и заглушка удаляется. */
+.contacts__photo{ grid-column:1 / -1; margin:1.6rem 0 0; }
+/* Фотография склада и карта стоят в одну строку (правка 25.09):
+   обе во втором ряду, высоту задаёт квадрат карты. */
+@media (min-width:901px){
+  /* Ряды закреплены явно: иначе карта с фотографией поднимались
+     над списком контактов, а заголовок раздела уезжал под них. */
+  .contacts .rule{ grid-row:1; }
+  .contacts__list{ grid-row:2; }
+  .contacts__photo{ grid-column:1 / 9; grid-row:3; align-self:stretch; margin-top:2.2rem; }
+  .contacts__map{ grid-row:3; margin-top:2.2rem; }
+  .contacts__photo-ph{ aspect-ratio:auto; height:100%; }
+  .contacts__photo img{ height:100%; object-fit:cover; }
+}
+.contacts__photo-ph{
+  aspect-ratio:16/7; background:var(--shade);
+  box-shadow:inset 0 0 0 1px var(--rule);
+  display:grid; place-items:center;
+  font-family:var(--mono); font-size:var(--t-2xs);
+  letter-spacing:.08em; text-transform:uppercase; color:var(--ink-25);
+}
+.contacts__photo img{ width:100%; height:auto; display:block; }

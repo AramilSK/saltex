@@ -82,12 +82,19 @@
         roll_kg_avg:  Number(p.roll_kg_avg) || (type ? type.roll_kg_avg : 20),
         /* photo — обложка для сетки каталога, photos — кадры ткани
            для карточки товара. Старая выгрузка знала только photo. */
+        /* colors:false — у позиции своих цветов нет, палитру
+           в карточке не показываем (ТЗ каталог 13) */
+        colors:       p.colors !== false,
         photo:        p.photo || (Array.isArray(p.photos) && p.photos[0]) || '',
         photos:       (Array.isArray(p.photos) && p.photos.length
                         ? p.photos
-                        : (p.photo ? [p.photo] : [])).map(String)
+                        : (p.photo ? [p.photo] : [])).map(String),
+        /* набивка: вместо цветов — образцы рисунка (ТЗ каталог 14) */
+        prints:       Array.isArray(p.prints) ? p.prints : null
       };
-    }).filter(function(p){ return p.id && p.price.base > 0; });
+    /* Раньше позиция без цены отбрасывалась — цен на сайте больше
+       нет, поэтому отбор только по артикулу (ТЗ каталог 3). */
+    }).filter(function(p){ return !!p.id; });
 
     return {
       source:   raw.source || 'erp',
@@ -147,28 +154,10 @@
     return tex + img;
   }
 
-  /* exact — приехал ли настоящий курс ЦБ. Если нет, считаем по
-     кэшу или страховочному значению и честно помечаем цену
-     приблизительной, но цифру показываем.
-
-     Показываем обе градации: цену до 250 кг и, если она есть
-     в прайсе, оптовую с пометкой (ТЗ 2.4). */
-  function priceBlock(p, rate, exact){
-    var c = S.calc(p, rate);
-    var note = exact
-      ? S.usd(c.usdKg) + '/кг по курсу ЦБ +5%'
-      : S.usd(c.usdKg) + '/кг · курс уточняется';
-
-    var bulk = c.hasBulk
-      ? '<span class="pcard__bulk">от ' + c.bulkFrom + ' кг — ' +
-        S.rub0(c.bulkRub) + '/кг, дешевле</span>'
-      : '';
-
-    return '<b class="pcard__kg">' + S.rub0(c.baseRub) + ' <small>/кг</small></b>' +
-           '<span class="pcard__usd">' + note + '</span>' + bulk;
-  }
-
-  function cardHTML(p, rate, i, exact){
+  /* Цен на сайте больше нет (ТЗ каталог 3): карточка показывает
+     характеристики, цену называет менеджер. Вместе с ценами ушёл
+     и курс доллара — он нужен был только для пересчёта. */
+  function cardHTML(p, i){
     /* Маркеров наличия на карточке нет (ТЗ 1.8), кнопки «в корзину»
        в сетке тоже: из каталога только переход в карточку типа. */
     /* Незаполненные поля прайса пропускаем: строка «Состав —»
@@ -188,7 +177,7 @@
       return '<div><dt>' + row[0] + '</dt><dd>' + S.esc(String(row[1])) + '</dd></div>';
     }).join('');
 
-    return '<li class="pcard rise' + (exact ? '' : ' is-pending') + '" data-id="' + S.esc(p.id) + '"' +
+    return '<li class="pcard rise" data-id="' + S.esc(p.id) + '"' +
              ' style="--d:' + Math.min((i % 4) * 60, 180) + 'ms">' +
       '<a class="pcard__link" href="product.html?id=' + encodeURIComponent(p.id) + '">' +
         '<div class="pcard__media">' + media(p) + '</div>' +
@@ -196,7 +185,6 @@
           '<h3 class="pcard__name">' + S.esc(p.name) +
             '<span>' + S.esc(p.typeName) + '</span></h3>' +
           '<dl class="pcard__spec">' + dl + '</dl>' +
-          '<div class="pcard__price">' + priceBlock(p, rate, exact) + '</div>' +
           '<span class="pcard__go">Смотреть</span>' +
         '</div>' +
       '</a></li>';
@@ -225,18 +213,6 @@
         : 'В корзину · рулон ' + btn.dataset.kg + ' кг';
     });
   });
-
-  /* Перерисовка только цен — вызывается, когда приехал курс ЦБ.
-     Полная перерисовка сетки сбросила бы анимацию появления. */
-  function repriceAll(list, items, rate){
-    var nodes = list.querySelectorAll('.pcard');
-    for (var i = 0; i < nodes.length && i < items.length; i++) {
-      var box = nodes[i].querySelector('.pcard__price');
-      /* сюда попадаем только после ответа ЦБ, значит курс точный */
-      if (box) box.innerHTML = priceBlock(items[i], rate, true);
-      nodes[i].classList.remove('is-pending');
-    }
-  }
 
   /* ══════════════════════════════════════════════════
      СТРАНИЦА КАТАЛОГА
@@ -349,15 +325,8 @@
       view = data.products.filter(matches).sort(byTypeThenDensity);
 
       var slice = view.slice(0, shown);
-      /* Считаем сразу по тому курсу, который есть — из кэша или
-         страховочному. Прочерк вместо цены на несколько секунд
-         (а без сети — навсегда) хуже, чем приблизительная цифра:
-         пока ЦБ не ответил, блок цены приглушён классом is-pending,
-         а в шапке написано «курс уточняется». */
-      var rate = S.rate();
-      var exact = S.rateOk();
 
-      list.innerHTML = slice.map(function(p, i){ return cardHTML(p, rate, i, exact); }).join('');
+      list.innerHTML = slice.map(function(p, i){ return cardHTML(p, i); }).join('');
       S.observe(list);
 
       var onOrder = isOnOrder();
@@ -385,9 +354,6 @@
         }
       }
       if (empty) empty.hidden = onOrder || view.length !== 0;
-
-      /* если настоящий курс приедет позже — пересчитаем цены на месте */
-      if (!exact) S.onRate(function(r){ repriceAll(list, slice, r); });
     }
 
     function plural(n){

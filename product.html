@@ -73,7 +73,6 @@
 <header class="masthead">
   <a class="masthead__logo" href="index.html" aria-label="САЛТЕКС — трикотажные полотна, на главную">
     <img src="assets/img/logo-emblem-256.png" alt="САЛТЕКС" width="256" height="256" decoding="async">
-    <span class="masthead__descriptor">Трикотажные полотна</span>
   </a>
 
   <nav class="masthead__nav" id="nav" aria-label="Основная навигация">
@@ -128,10 +127,24 @@
   <div class="prod__gallery">
     <div class="prod__shot" id="shot"></div>
     <div class="prod__thumbs" id="thumbs" hidden></div>
-    <p class="prod__ask">
-      Хотите купить это полотно или уточнить наличие?<br>
-      <b>Позвоните:</b> <a data-phone href="tel:+79852201354">+7 (985) 220-13-54</a>
-    </p>
+
+    <!-- Цвета стоят прямо под фотографией ткани (ТЗ каталог 5):
+         на компьютере они лежат в один ряд и листаются стрелками,
+         кнопка раскрывает всю палитру сразу. -->
+    <div class="prod__colors" id="colors">
+      <p class="prod__h">Цвет <span style="color:var(--ink-45);font-weight:400">(<span id="colors-count">0</span>)</span></p>
+      <p class="prod__pick" id="colors-pick">Цвет не&nbsp;выбран</p>
+      <div class="prod__strip">
+        <button class="prod__arrow" type="button" id="colors-prev" aria-label="Предыдущие цвета">‹</button>
+        <div class="prod__swatches" id="swatches"></div>
+        <button class="prod__arrow" type="button" id="colors-next" aria-label="Следующие цвета">›</button>
+      </div>
+      <button class="prod__more" type="button" id="colors-more" hidden>Показать все</button>
+      <p class="prod__hint">Наличие уточняйте у&nbsp;менеджера по&nbsp;телефону <a data-phone href="tel:+79852201354">+7 (985) 220-13-54</a></p>
+    </div>
+
+    <!-- Блок «Хотите купить…» убран (правка 25.09): телефон уже
+         стоит строкой выше, в приписке про наличие. -->
   </div>
 
   <!-- ── Характеристики ── -->
@@ -148,48 +161,30 @@
          настоящая кнопка «В корзину» не видна на экране. -->
     <a class="prod__jump" id="jump" href="#to-cart" hidden>Купить<span aria-hidden="true">↓</span></a>
 
-    <!-- Палитра общая для всего каталога: цвет к ткани не привязан,
-         красим любое полотно в любой оттенок карты. -->
-    <div class="prod__colors" id="colors">
-      <p class="prod__h">Цвет <span style="color:var(--ink-45);font-weight:400">(<span id="colors-count">0</span>)</span></p>
-      <p class="prod__pick" id="colors-pick">Цвет не&nbsp;выбран</p>
-      <div class="prod__swatches" id="swatches"></div>
-      <button class="prod__more" type="button" id="colors-more" hidden>Показать ещё</button>
-    </div>
-
     <!-- ── Калькулятор ──
-         Всё считается от цены за килограмм в долларах,
-         помноженной на курс ЦБ +5% из шапки. -->
+         Цен на сайте нет (ТЗ каталог 3), поэтому счёт идёт
+         в одну сторону: сколько метров нужно — столько это
+         килограммов (ТЗ каталог 4). -->
     <div class="calc">
+      <div class="calc__field calc__field--lead">
+        <label for="metres">Сколько метров нужно</label>
+        <input id="metres" type="number" min="1" step="10" inputmode="numeric" value="100">
+      </div>
+
       <div class="calc__lead">
-        <span class="calc__lead-label">Цена за 1 кг</span>
+        <span class="calc__lead-label">Это примерно</span>
         <b class="calc__kg" id="c-kg">—</b>
-        <span class="calc__usd" id="c-usd"></span>
       </div>
 
-      <div class="calc__rows">
-        <p class="calc__row"><span>Цена за 1 метр</span><b id="c-m">—</b></p>
-        <p class="calc__row"><span>Метров в рулоне</span><b id="c-rollm">—</b></p>
-        <p class="calc__row"><span>Стоимость рулона</span><b id="c-roll">—</b></p>
+      <div class="calc__rows" id="calc-rows">
+        <p class="calc__row"><span>Метров в 1 кг</span><b id="c-mpk">—</b></p>
+        <p class="calc__row"><span id="c-rollm-label">Метров в рулоне</span><b id="c-rollm">—</b></p>
       </div>
 
-      <div class="calc__field">
-        <label for="mass">Масса</label>
-        <select id="mass"></select>
-      </div>
-      <div class="calc__field" id="mass-own-row" hidden>
-        <label for="mass-own">Свой вес, кг</label>
-        <input id="mass-own" type="number" min="1" step="1" inputmode="numeric">
-      </div>
-
-      <div class="calc__total">
-        <span>Итого</span>
-        <b id="c-total">—</b>
-      </div>
       <p class="calc__note" id="c-mass"></p>
-      <p class="calc__note">* Указана минимальная стоимость по&nbsp;курсу ЦБ&nbsp;+5%. Точную цену, скидку от&nbsp;объёма и&nbsp;срок отгрузки подтверждает менеджер.</p>
+      <p class="calc__note">Наличие, цену и&nbsp;срок отгрузки подтверждает менеджер.</p>
 
-      <button class="btn btn--ochre btn--wide" type="button" id="to-cart"><span>В корзину</span></button>
+      <button class="btn btn--ochre btn--wide" type="button" id="to-cart"><span>Добавить в&nbsp;запрос</span></button>
       <p class="calc__added" id="added" role="status" aria-live="polite" hidden></p>
     </div>
   </div>
