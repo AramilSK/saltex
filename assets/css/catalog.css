@@ -464,8 +464,18 @@
 .prod__colors--prints .prod__swatches{ flex-wrap:wrap; overflow:visible; }
 .prod__colors--prints .prod__swatches{ gap:.45rem; }
 @media (max-width:1180px){
+  /* На узком экране стрелок нет, оттенки переносятся по строкам.
+     Показываем три ряда, остальное открывает кнопка — иначе
+     палитра из полусотни квадратов отодвигает карточку вниз,
+     а кнопка «Показать все» не меняет ровным счётом ничего. */
   .prod__arrow{ display:none; }
-  .prod__swatches{ flex-wrap:wrap; overflow:visible; }
+  .prod__swatches{
+    flex-wrap:wrap; overflow:hidden;
+    max-height:calc(2.6rem * 3 + .3rem * 2);
+  }
+  .prod__colors.is-open .prod__swatches{ max-height:none; overflow:visible; }
+  /* У набивки образцов десяток — прятать нечего */
+  .prod__colors--prints .prod__swatches{ max-height:none; overflow:visible; }
 }
 /* Оттенки — кнопки, а не ссылки: выбор цвета остаётся на этой же
    карточке и никуда не ведёт. Селекторы держат оба варианта,

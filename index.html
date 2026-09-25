@@ -975,6 +975,22 @@
     '</button>';
   }).join('');
 
+  /* Зажим пальца на образце — та же футболка, что и при наведении.
+     Класс дублирует :active: Safari на iOS применяет его к кнопкам
+     не всегда, и эффект бы пропадал именно на телефоне. */
+  wrap.addEventListener('touchstart', function(e){
+    var b = e.target.closest('.swatch--demo');
+    if (b) b.classList.add('is-pressed');
+  }, { passive:true });
+
+  ['touchend','touchcancel'].forEach(function(name){
+    wrap.addEventListener(name, function(){
+      wrap.querySelectorAll('.is-pressed').forEach(function(b){
+        b.classList.remove('is-pressed');
+      });
+    }, { passive:true });
+  });
+
   /* ── Диалог выбора полотна ── */
   var dlg = document.createElement('dialog');
   dlg.className = 'modal';
