@@ -663,6 +663,19 @@ html.is-loading{ overflow:hidden; }
 }
 @media (max-width:520px){ .swatches{ grid-template-columns:repeat(3,1fr) } }
 
+/* Раскрытие карты на телефоне (правка 29.09): в свёрнутом виде
+   видно 12 оттенков — три ряда по четыре или четыре по три. */
+.swatches__more{ display:none; }
+@media (max-width:900px){
+  .swatches:not(.is-open) .swatch:nth-child(n+13){ display:none; }
+  .swatches__more{
+    display:block; grid-column:1 / 7; justify-self:start; margin-top:1.6rem;
+    appearance:none; background:none; border:0; padding:0 0 2px; cursor:pointer;
+    font-family:var(--mono); font-size:var(--t-xs); letter-spacing:.06em;
+    color:var(--ink); border-bottom:1px solid var(--ochre);
+  }
+}
+
 .swatch{
   appearance:none; border:0; padding:0; background:none;
   cursor:pointer; text-align:left; font-family:inherit;
@@ -845,6 +858,9 @@ body{ font-weight:500; }
 .masthead__actions{ align-items:center; }
 .btn-icon{ height:3rem; }
 .masthead__burger{ height:3rem; }
+/* Значки Telegram и MAX крупнее (правка 29.09): их рамки подрезаны
+   по самим знакам, и размер чуть больше, чем у телефона и корзины. */
+.btn-icon[data-chat] svg{ width:1.4rem; height:1.4rem; }
 
 /* Счётчик корзины срезался краем кнопки: он висел на −1 px,
    а у кнопки включено обрезание ради заливки при наведении.
@@ -917,41 +933,62 @@ body > footer{ flex:0 0 auto; }
    порядок работы. Сетка та же, что у остальных разделов. */
 .delivery{ padding-block:var(--bay); }
 .delivery__intro{ grid-column:1 / 5; }
+/* Акценты (правка 29.09): крупный заголовок с охристым словом,
+   в карточках — ключевое слово дисплейным шрифтом, первая карточка
+   тёмная, у шагов крупные номера. Глаз цепляется за «Самовывоз»,
+   «По счёту», «Отсрочка» и 01–04, а подробности читаются следом. */
 .delivery__intro h2{
   font-family:var(--display); font-weight:600;
-  font-size:var(--t-md); line-height:1.15; letter-spacing:-.03em;
-  margin-bottom:.8rem;
+  font-size:var(--t-lg); line-height:1.02; letter-spacing:-.04em;
+  margin-bottom:1rem;
 }
-.delivery__intro p{ font-size:var(--t-base); line-height:1.6; color:var(--ink-70); }
+.delivery__intro h2 em{ font-style:normal; color:var(--ochre); }
+.delivery__intro p{ font-size:var(--t-base); line-height:1.6; color:var(--ink-70); max-width:32ch; }
 
 .delivery__grid{
   grid-column:5 / 13; list-style:none; margin:0; padding:0;
-  display:grid; grid-template-columns:repeat(3,1fr);
-  gap:1px; background:var(--rule); border:1px solid var(--rule);
+  display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter);
+  align-self:start;
 }
-.dcard{ background:var(--paper); padding:clamp(1.1rem,1.8vw,1.5rem); }
+.dcard{
+  background:var(--shade); padding:clamp(1.2rem,2vw,1.7rem);
+  display:flex; flex-direction:column; gap:.55rem;
+  border-top:3px solid var(--ochre);
+}
 .dcard__kicker{
   font-family:var(--mono); font-size:var(--t-2xs); letter-spacing:.14em;
-  text-transform:uppercase; color:var(--ochre); margin-bottom:.6rem;
+  text-transform:uppercase; color:var(--ochre);
 }
-.dcard__title{
-  font-family:var(--display); font-weight:600; font-size:var(--t-base);
-  line-height:1.25; letter-spacing:-.02em; margin-bottom:.5rem;
+.dcard__big{
+  font-family:var(--display); font-weight:600;
+  font-size:clamp(1.35rem,2vw,1.9rem); line-height:1.05; letter-spacing:-.03em;
+  margin:.1rem 0 .3rem;
 }
-.dcard__text{ font-size:var(--t-sm); line-height:1.6; color:var(--ink-70); }
+.dcard__text{ font-size:var(--t-sm); line-height:1.55; color:var(--ink-70); }
+.dcard__meta{
+  margin-top:auto; padding-top:.7rem; border-top:1px solid var(--rule);
+  font-family:var(--mono); font-size:var(--t-2xs); letter-spacing:.04em; color:var(--ink);
+}
+/* первая карточка тёмная — на ней взгляд останавливается первым */
+.dcard--dark{ background:var(--ink); color:var(--paper); }
+.dcard--dark .dcard__text{ color:#ffffffb3; }
+.dcard--dark .dcard__meta{ color:var(--paper); border-top-color:#ffffff26; }
 
 .delivery__order{
-  grid-column:1 / 13; list-style:none; margin:clamp(1.6rem,3vh,2.4rem) 0 0; padding:0;
+  grid-column:1 / 13; list-style:none; margin:clamp(2.2rem,5vh,3.4rem) 0 0; padding:0;
   display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gutter);
 }
-.delivery__order li{
-  display:flex; gap:.7rem; align-items:baseline;
-  border-top:1px solid var(--rule-hard); padding-top:.9rem;
-}
+.delivery__order li{ border-top:1px solid var(--rule-hard); padding-top:1rem; }
 .delivery__order b{
-  font-family:var(--mono); font-size:var(--t-2xs); color:var(--ochre); flex:0 0 auto;
+  display:block; font-family:var(--display); font-weight:600;
+  font-size:clamp(1.8rem,3vw,2.6rem); line-height:1; letter-spacing:-.04em;
+  color:var(--ochre); margin-bottom:.6rem;
 }
-.delivery__order span{ font-size:var(--t-sm); line-height:1.5; color:var(--ink-70); }
+.delivery__order h3{
+  font-family:var(--display); font-weight:600; font-size:var(--t-base);
+  letter-spacing:-.02em; margin-bottom:.3rem;
+}
+.delivery__order span{ display:block; font-size:var(--t-sm); line-height:1.5; color:var(--ink-70); }
 
 @media (max-width:900px){
   .delivery__intro{ grid-column:1 / 7; }

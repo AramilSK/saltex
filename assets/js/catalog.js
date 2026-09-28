@@ -182,8 +182,9 @@
       '<a class="pcard__link" href="product.html?id=' + encodeURIComponent(p.id) + '">' +
         '<div class="pcard__media">' + media(p) + '</div>' +
         '<div class="pcard__body">' +
-          '<h3 class="pcard__name">' + S.esc(p.name) +
-            '<span>' + S.esc(p.typeName) + '</span></h3>' +
+          /* Вид полотна под названием не пишем (правка 29.09):
+             он уже есть в самом названии, получался дубль. */
+          '<h3 class="pcard__name">' + S.esc(p.name) + '</h3>' +
           '<dl class="pcard__spec">' + dl + '</dl>' +
           '<span class="pcard__go">Смотреть</span>' +
         '</div>' +
