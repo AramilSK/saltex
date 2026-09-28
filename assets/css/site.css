@@ -688,29 +688,19 @@ html.is-loading{ overflow:hidden; }
 .swatch[aria-pressed="true"] i{ box-shadow:inset 0 0 0 2px var(--ink); transform:scale(.94); }
 .swatch:hover i{ transform:scale(.94); }
 
-/* ТЗ главная 14: при наведении квадрат превращается в футболку
-   и чуть увеличивается. Пока включено на одном образце — заказчик
-   смотрит, как это выглядит; снять ограничение = убрать --demo
-   из селектора и из разметки в конце index.html. */
-.swatch--demo i{
-  transition:transform .3s var(--ease), mask-size .3s var(--ease),
-             -webkit-mask-size .3s var(--ease);
-}
-/* На телефоне наведения нет: форму меняет зажим пальца, поэтому
-   к hover добавлен :active. Заодно гасим системное выделение
-   и всплывающее меню по долгому нажатию. */
+/* Образец цвета — футболка, а не квадрат (правка 28.09).
+   Маска стоит постоянно, прежняя смена формы по наведению убрана:
+   форма одна и та же и на компьютере, и на телефоне. */
 .swatch{ touch-action:manipulation; }
-.swatch--demo i{ -webkit-touch-callout:none; user-select:none; }
-.swatch--demo:hover i,
-.swatch--demo:focus-visible i,
-.swatch--demo:active i,
-.swatch--demo.is-pressed i{
+.swatch i{
   -webkit-mask-image:url(../img/tshirt.svg); mask-image:url(../img/tshirt.svg);
   -webkit-mask-repeat:no-repeat;  mask-repeat:no-repeat;
   -webkit-mask-position:center;   mask-position:center;
   -webkit-mask-size:contain;      mask-size:contain;
-  box-shadow:none; transform:scale(1.12);
+  /* рамка и уголок выбора маской всё равно срезаются */
+  box-shadow:none;
 }
+.swatch i::before{ display:none; }
 .swatch:focus-visible i{ outline:2px solid var(--ochre); outline-offset:3px; }
 .swatch em{
   font-family:var(--mono); font-size:var(--t-2xs); font-style:normal;
@@ -848,6 +838,31 @@ body{ font-weight:500; }
 }
 .masthead__logo{ color:var(--paper); }
 .masthead__logo img{ width:84px; height:84px; }
+
+/* Кнопкам в шапке не хватало высоты: строка растягивалась по
+   содержимому, и квадрат превращался в узкую полоску, из которой
+   значок вылезал (правка 28.09). Задаём высоту явно. */
+.masthead__actions{ align-items:center; }
+.btn-icon{ height:3rem; }
+.masthead__burger{ height:3rem; }
+
+/* Счётчик корзины срезался краем кнопки: он висел на −1 px,
+   а у кнопки включено обрезание ради заливки при наведении.
+   Уводим его внутрь и уменьшаем, чтобы не закрывал значок. */
+/* Счётчик корзины вынесен за угол кнопки, иначе он ложился прямо
+   на значок. Обрезка кнопке больше не нужна: заливка при наведении
+   теперь растёт снизу вверх (scaleY) и за края не выходит. */
+.btn-icon{ overflow:visible; }
+.btn-icon::before{ transform:scaleY(0); transform-origin:bottom; }
+.btn-icon:hover::before,
+.btn-icon:focus-visible::before{ transform:scaleY(1); }
+.btn-icon__badge{
+  top:-5px; right:-5px;
+  min-width:.95rem; height:.95rem; padding:0 .16rem;
+  font-size:.52rem; letter-spacing:0;
+  /* кольцо цветом шапки отделяет счётчик от рамки кнопки */
+  box-shadow:0 0 0 2px var(--graphite);
+}
 .masthead__nav a{ color:var(--paper); }
 .masthead__burger{ border-color:#ffffff4d; color:var(--paper); }
 .btn-icon{ border-color:#ffffff4d; color:var(--paper); }
@@ -863,7 +878,13 @@ body{ font-weight:500; }
 @media (max-width:560px){
   /* Значок MAX на телефоне возвращён (ТЗ главная 3) */
   .btn-icon--max{ display:inline-flex; }
-  .masthead__logo img{ width:60px; height:60px; }
+  /* Логотип на телефоне крупнее (правка 28.09). Центрирование
+     автоотступами снято: с крупным знаком оно съедало место,
+     и корзина с бургером уходили за правый край экрана. */
+  .masthead__logo{ margin-inline:0; }
+  .masthead__logo img{ width:76px; height:76px; }
+  .btn-icon,
+  .masthead__burger{ height:2.6rem; }
 }
 
 /* Подвал прижат к низу экрана на коротких страницах (правка 25.09):
@@ -889,6 +910,57 @@ body > footer{ flex:0 0 auto; }
 .certs__row img{ filter:grayscale(1) brightness(0) invert(1); opacity:.6; }
 .certs__row li:hover img,
 .certs__row a:focus-visible img{ filter:grayscale(1) brightness(0) invert(1); opacity:1; }
+
+/* ══════════════ ДОСТАВКА И ОПЛАТА ══════════════
+   Блок переписан под подачу отраслевых сайтов (правка 28.09):
+   слева вводная, справа карточки условий, под ними — короткий
+   порядок работы. Сетка та же, что у остальных разделов. */
+.delivery{ padding-block:var(--bay); }
+.delivery__intro{ grid-column:1 / 5; }
+.delivery__intro h2{
+  font-family:var(--display); font-weight:600;
+  font-size:var(--t-md); line-height:1.15; letter-spacing:-.03em;
+  margin-bottom:.8rem;
+}
+.delivery__intro p{ font-size:var(--t-base); line-height:1.6; color:var(--ink-70); }
+
+.delivery__grid{
+  grid-column:5 / 13; list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--rule); border:1px solid var(--rule);
+}
+.dcard{ background:var(--paper); padding:clamp(1.1rem,1.8vw,1.5rem); }
+.dcard__kicker{
+  font-family:var(--mono); font-size:var(--t-2xs); letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ochre); margin-bottom:.6rem;
+}
+.dcard__title{
+  font-family:var(--display); font-weight:600; font-size:var(--t-base);
+  line-height:1.25; letter-spacing:-.02em; margin-bottom:.5rem;
+}
+.dcard__text{ font-size:var(--t-sm); line-height:1.6; color:var(--ink-70); }
+
+.delivery__order{
+  grid-column:1 / 13; list-style:none; margin:clamp(1.6rem,3vh,2.4rem) 0 0; padding:0;
+  display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gutter);
+}
+.delivery__order li{
+  display:flex; gap:.7rem; align-items:baseline;
+  border-top:1px solid var(--rule-hard); padding-top:.9rem;
+}
+.delivery__order b{
+  font-family:var(--mono); font-size:var(--t-2xs); color:var(--ochre); flex:0 0 auto;
+}
+.delivery__order span{ font-size:var(--t-sm); line-height:1.5; color:var(--ink-70); }
+
+@media (max-width:900px){
+  .delivery__intro{ grid-column:1 / 7; }
+  .delivery__grid{ grid-column:1 / 7; grid-template-columns:1fr; margin-top:1.6rem; }
+  .delivery__order{ grid-column:1 / 7; grid-template-columns:1fr 1fr; }
+}
+@media (max-width:560px){
+  .delivery__order{ grid-template-columns:1fr; }
+}
 
 /* ══════════════ ФОТО СКЛАДА ══════════════
    ТЗ главная 19: снимок под блоком с адресом. Пока стоит заглушка

@@ -294,16 +294,16 @@
       "photo": "img/fabric/KUL-NAB-150.jpg",
       "colors": false,
       "prints": [
-        { "n": "Рисунок 1",  "f": "img/fabric/KUL-NAB-150-p01.jpg" },
-        { "n": "Рисунок 2",  "f": "img/fabric/KUL-NAB-150-p02.jpg" },
-        { "n": "Рисунок 3",  "f": "img/fabric/KUL-NAB-150-p03.jpg" },
-        { "n": "Рисунок 4",  "f": "img/fabric/KUL-NAB-150-p04.jpg" },
-        { "n": "Рисунок 5",  "f": "img/fabric/KUL-NAB-150-p05.jpg" },
-        { "n": "Рисунок 6",  "f": "img/fabric/KUL-NAB-150-p06.jpg" },
-        { "n": "Рисунок 7",  "f": "img/fabric/KUL-NAB-150-p07.jpg" },
-        { "n": "Рисунок 8",  "f": "img/fabric/KUL-NAB-150-p08.jpg" },
-        { "n": "Рисунок 9",  "f": "img/fabric/KUL-NAB-150-p09.jpg" },
-        { "n": "Рисунок 10", "f": "img/fabric/KUL-NAB-150-p10.jpg" }
+        { "n": "Красно-жёлтая клетка", "f": "img/fabric/KUL-NAB-150-p01.jpg" },
+        { "n": "Бордовая клетка",      "f": "img/fabric/KUL-NAB-150-p02.jpg" },
+        { "n": "Жираф",                "f": "img/fabric/KUL-NAB-150-p03.jpg" },
+        { "n": "Розочка",              "f": "img/fabric/KUL-NAB-150-p04.jpg" },
+        { "n": "Газета",               "f": "img/fabric/KUL-NAB-150-p05.jpg" },
+        { "n": "Зебра",                "f": "img/fabric/KUL-NAB-150-p06.jpg" },
+        { "n": "Розовая клетка",       "f": "img/fabric/KUL-NAB-150-p07.jpg" },
+        { "n": "Зелёная клетка",       "f": "img/fabric/KUL-NAB-150-p08.jpg" },
+        { "n": "Красная клетка",       "f": "img/fabric/KUL-NAB-150-p09.jpg" },
+        { "n": "Большие буквы",        "f": "img/fabric/KUL-NAB-150-p10.jpg" }
       ]
     }
   ]

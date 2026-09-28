@@ -511,6 +511,24 @@
 .prod__more:hover{ color:var(--ochre); }
 .prod__more[hidden]{ display:none; }
 
+/* Образцы цвета в карточке — футболки, как и в карте на главной
+   (правка 28.09). Цвет живёт на вложенном <i>, сама кнопка остаётся
+   прямоугольной: по ней рисуется рамка выбранного оттенка. */
+.prod__swatches .prod__sw:not(.prod__sw--print){
+  background:none; box-shadow:none;
+}
+.prod__swatches .prod__sw:not(.prod__sw--print) > i{
+  display:block; width:100%; aspect-ratio:1/1;
+  -webkit-mask-image:url(../img/tshirt.svg); mask-image:url(../img/tshirt.svg);
+  -webkit-mask-repeat:no-repeat;  mask-repeat:no-repeat;
+  -webkit-mask-position:center;   mask-position:center;
+  -webkit-mask-size:contain;      mask-size:contain;
+}
+.prod__swatches .prod__sw:not(.prod__sw--print)[aria-pressed="true"]{
+  box-shadow:none; transform:none;
+  outline:2px solid var(--ochre); outline-offset:1px;
+}
+
 /* Образцы рисунка у набивки (ТЗ каталог 14): блоки крупнее
    цветовых квадратов — на маленьком рисунок не разобрать. */
 /* Селектор с контейнером: у базового правила .prod__swatches

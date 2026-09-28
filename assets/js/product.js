@@ -90,10 +90,10 @@
     /* ── Заголовок ── */
     document.getElementById('title').textContent = p.name;
     var sub = document.getElementById('sub');
-    /* Артикул с карточки убран (правка 25.09): в подзаголовке
-       остаётся только вид полотна. У набивки его место занимает
-       название выбранного рисунка. */
-    sub.textContent = p.typeName;
+    /* Подзаголовок пустой (правка 28.09): вид полотна и так стоит
+       в названии, дублировать его под заголовком незачем. Строка
+       остаётся для набивки — туда встаёт название рисунка. */
+    sub.textContent = '';
 
     /* ── Характеристики ──
        Строки, которых нет в прайсе, не показываем прочерком:
@@ -168,7 +168,7 @@
         pickLabel.textContent = 'Выбран ' + b.dataset.name;
         pickLabel.classList.add('is-set');
         var subLine = document.getElementById('sub');
-        if (subLine) subLine.innerHTML = S.esc(p.typeName) + ' · ' + S.esc(b.dataset.name);
+        if (subLine) subLine.textContent = b.dataset.name;
       });
 
     /* У части позиций своих цветов нет — палитру там не показываем
@@ -176,13 +176,15 @@
     } else if (box && sw && palette.length && p.colors !== false) {
       var wanted = new URLSearchParams(location.search).get('color') || '';
 
+      /* Цвет лежит на вложенном <i>: образец показывается футболкой,
+         а маска на самой кнопке срезала бы рамку выбора. */
       sw.innerHTML = palette.map(function(c){
         return '<button class="prod__sw" type="button"' +
                ' data-code="' + S.esc(c.k) + '"' +
                ' data-num="' + S.esc(c.p) + '"' +
-               ' style="background:' + S.esc(c.h) + '"' +
                (c.k === wanted ? ' aria-pressed="true"' : ' aria-pressed="false"') +
                ' title="№ ' + S.esc(c.p) + ' · Pantone ' + S.esc(c.k) + '">' +
+               '<i style="background:' + S.esc(c.h) + '" aria-hidden="true"></i>' +
                '<span class="vh">№ ' + S.esc(c.p) + ', Pantone ' + S.esc(c.k) + '</span></button>';
       }).join('');
 
