@@ -13,9 +13,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- Общий слой (токены, шапка, кнопки, модалка, подвал) и сетка карточек -->
-<link rel="stylesheet" href="assets/css/site.css">
-<link rel="stylesheet" href="assets/css/catalog.css">
+<!-- Общий слой (токены, шапка, кнопки, модалка, подвал) и сетка карточек.
+     ?v= — дата выгрузки. При каждом обновлении сайта её нужно менять
+     во всех четырёх страницах, иначе телефон покажет новую разметку
+     со старыми стилями из кэша. -->
+<link rel="stylesheet" href="assets/css/site.css?v=20260929">
+<link rel="stylesheet" href="assets/css/catalog.css?v=20260929">
 <style>
 /* ══════════════════════════════════════════════════════
    САЛТЕКС — стили только этой страницы.
@@ -1004,11 +1007,11 @@
 
 })();
 </script>
-<script src="assets/js/core.js"></script>
+<script src="assets/js/core.js?v=20260929"></script>
 <!-- Палитра и ассортимент: копии JSON, чтобы блок работал и при
      открытии сайта без сервера. Правятся JSON, копии генерируются. -->
-<script src="data/colors.js"></script>
-<script src="data/catalog.js"></script>
+<script src="data/colors.js?v=20260929"></script>
+<script src="data/catalog.js?v=20260929"></script>
 <script>
 /* ── Цветовая карта ──
    Цвет к ткани не привязан: карта общая для всего каталога.
