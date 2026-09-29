@@ -777,42 +777,54 @@
   <section class="bay delivery" id="delivery">
     <p class="rule"><b>Доставка и&nbsp;оплата</b><span>Самовывоз · безналичный расчёт</span></p>
 
-    <!-- Акценты (правка 29.09): у каждой карточки крупное ключевое
-         слово, первая карточка — тёмная, шаги с крупными номерами. -->
+    <!-- Подача по референсу заказчика, адаптированная под наш стиль
+         (правка 29.09): подзаголовок с охристой планкой, карточки
+         в две колонки с номером в тёмной плашке. Текст свой,
+         по содержанию — как в образце. -->
     <div class="delivery__intro rise">
       <h2>Отгружаем со&nbsp;склада <em>в&nbsp;Томилино</em></h2>
       <p>Партию собираем к&nbsp;согласованному дню. Забрать можно самим или машиной вашего перевозчика.</p>
     </div>
 
-    <ul class="delivery__grid">
-      <li class="dcard dcard--dark rise">
-        <p class="dcard__kicker">Отгрузка</p>
-        <p class="dcard__big">Самовывоз</p>
-        <p class="dcard__text">Томилино, Новорязанское шоссе, 25-й&nbsp;км, 5к37, офис и&nbsp;склад&nbsp;Е8</p>
-        <p class="dcard__meta">Пн&nbsp;— Пт · 09:00&nbsp;— 18:00</p>
-      </li>
+    <div class="dgroup rise">
+      <h3 class="dgroup__title">Доставка</h3>
+      <ul class="dgroup__list">
+        <li class="ditem">
+          <b class="ditem__no">01</b>
+          <div>
+            <p class="ditem__title">Самовывоз со&nbsp;склада</p>
+            <p class="ditem__text">Московская область, Томилино, Новорязанское шоссе, 25-й&nbsp;км, 5к37, офис и&nbsp;склад&nbsp;Е8. Пн&nbsp;— Пт, 09:00&nbsp;— 18:00.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
 
-      <li class="dcard rise" style="--d:100ms">
-        <p class="dcard__kicker">Оплата</p>
-        <p class="dcard__big">По&nbsp;счёту</p>
-        <p class="dcard__text">Безналичный расчёт для юридических лиц и&nbsp;ИП</p>
-        <p class="dcard__meta">Закрывающие документы полным пакетом</p>
-      </li>
-
-      <li class="dcard rise" style="--d:200ms">
-        <p class="dcard__kicker">Постоянным клиентам</p>
-        <p class="dcard__big">Отсрочка</p>
-        <p class="dcard__text">Индивидуальные условия при регулярных заказах</p>
-        <p class="dcard__meta">По&nbsp;объёму и&nbsp;срокам оплаты</p>
-      </li>
-    </ul>
-
-    <ol class="delivery__order rise" style="--d:120ms">
-      <li><b>01</b><h3>Заявка</h3><span>Называете полотно, цвет и&nbsp;метраж</span></li>
-      <li><b>02</b><h3>Счёт</h3><span>Менеджер считает партию и&nbsp;выставляет счёт</span></li>
-      <li><b>03</b><h3>Оплата</h3><span>По&nbsp;счёту или на&nbsp;согласованных условиях</span></li>
-      <li><b>04</b><h3>Отгрузка</h3><span>Забираете со&nbsp;склада в&nbsp;назначенный день</span></li>
-    </ol>
+    <div class="dgroup rise" style="--d:120ms">
+      <h3 class="dgroup__title">Оплата</h3>
+      <ul class="dgroup__list">
+        <li class="ditem">
+          <b class="ditem__no">01</b>
+          <div>
+            <p class="ditem__title">Безналичный расчёт</p>
+            <p class="ditem__text">Для юридических лиц и&nbsp;ИП&nbsp;— оплата по&nbsp;выставленному счёту. Закрывающие документы&nbsp;— полным пакетом.</p>
+          </div>
+        </li>
+        <li class="ditem">
+          <b class="ditem__no">02</b>
+          <div>
+            <p class="ditem__title">Условия для постоянных клиентов</p>
+            <p class="ditem__text">При регулярных заказах возможны индивидуальные условия по&nbsp;объёмам, резерву и&nbsp;отсрочке&nbsp;— их&nbsp;обсуждаете с&nbsp;персональным менеджером.</p>
+          </div>
+        </li>
+        <li class="ditem">
+          <b class="ditem__no">03</b>
+          <div>
+            <p class="ditem__title">Порядок оплаты</p>
+            <p class="ditem__text">Согласовываем ассортимент и&nbsp;объём, выставляем счёт и&nbsp;резервируем ткань под&nbsp;ваш заказ. Отгружаем после поступления оплаты или на&nbsp;согласованных условиях.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
   </section>
 
   <!-- ══════════ КОНТАКТЫ ══════════ -->

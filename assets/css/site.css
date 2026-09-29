@@ -928,75 +928,64 @@ body > footer{ flex:0 0 auto; }
 .certs__row a:focus-visible img{ filter:grayscale(1) brightness(0) invert(1); opacity:1; }
 
 /* ══════════════ ДОСТАВКА И ОПЛАТА ══════════════
-   Блок переписан под подачу отраслевых сайтов (правка 28.09):
-   слева вводная, справа карточки условий, под ними — короткий
-   порядок работы. Сетка та же, что у остальных разделов. */
+   Подача по референсу заказчика, переложенная на наш стиль
+   (правка 29.09): у каждой группы подзаголовок с охристой планкой
+   слева и чертой снизу, условия — карточками в две колонки,
+   номер стоит в тёмной квадратной плашке. Скругления и красный
+   цвет образца заменены на наши прямые углы и охру. */
 .delivery{ padding-block:var(--bay); }
-.delivery__intro{ grid-column:1 / 5; }
-/* Акценты (правка 29.09): крупный заголовок с охристым словом,
-   в карточках — ключевое слово дисплейным шрифтом, первая карточка
-   тёмная, у шагов крупные номера. Глаз цепляется за «Самовывоз»,
-   «По счёту», «Отсрочка» и 01–04, а подробности читаются следом. */
+
+.delivery__intro{ grid-column:1 / 13; }
 .delivery__intro h2{
   font-family:var(--display); font-weight:600;
   font-size:var(--t-lg); line-height:1.02; letter-spacing:-.04em;
-  margin-bottom:1rem;
+  margin-bottom:.9rem;
 }
 .delivery__intro h2 em{ font-style:normal; color:var(--ochre); }
-.delivery__intro p{ font-size:var(--t-base); line-height:1.6; color:var(--ink-70); max-width:32ch; }
+.delivery__intro p{ font-size:var(--t-base); line-height:1.6; color:var(--ink-70); max-width:52ch; }
 
-.delivery__grid{
-  grid-column:5 / 13; list-style:none; margin:0; padding:0;
-  display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter);
-  align-self:start;
-}
-.dcard{
-  background:var(--shade); padding:clamp(1.2rem,2vw,1.7rem);
-  display:flex; flex-direction:column; gap:.55rem;
-  border-top:3px solid var(--ochre);
-}
-.dcard__kicker{
-  font-family:var(--mono); font-size:var(--t-2xs); letter-spacing:.14em;
-  text-transform:uppercase; color:var(--ochre);
-}
-.dcard__big{
+.dgroup{ grid-column:1 / 13; margin-top:clamp(2.2rem,5vh,3.2rem); }
+.dgroup__title{
+  position:relative; display:inline-block;
+  padding:0 0 .7rem .9rem; margin-bottom:1.4rem;
   font-family:var(--display); font-weight:600;
-  font-size:clamp(1.35rem,2vw,1.9rem); line-height:1.05; letter-spacing:-.03em;
-  margin:.1rem 0 .3rem;
+  font-size:var(--t-md); line-height:1.1; letter-spacing:-.03em;
 }
-.dcard__text{ font-size:var(--t-sm); line-height:1.55; color:var(--ink-70); }
-.dcard__meta{
-  margin-top:auto; padding-top:.7rem; border-top:1px solid var(--rule);
-  font-family:var(--mono); font-size:var(--t-2xs); letter-spacing:.04em; color:var(--ink);
+/* планка слева от слова */
+.dgroup__title::before{
+  content:""; position:absolute; left:0; top:.12em;
+  width:3px; height:1em; background:var(--ochre);
 }
-/* первая карточка тёмная — на ней взгляд останавливается первым */
-.dcard--dark{ background:var(--ink); color:var(--paper); }
-.dcard--dark .dcard__text{ color:#ffffffb3; }
-.dcard--dark .dcard__meta{ color:var(--paper); border-top-color:#ffffff26; }
+/* короткая черта под заголовком */
+.dgroup__title::after{
+  content:""; position:absolute; left:0; bottom:0;
+  width:4.5rem; height:2px; background:var(--ochre);
+}
 
-.delivery__order{
-  grid-column:1 / 13; list-style:none; margin:clamp(2.2rem,5vh,3.4rem) 0 0; padding:0;
-  display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gutter);
+.dgroup__list{
+  list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:repeat(2,1fr); gap:var(--gutter);
 }
-.delivery__order li{ border-top:1px solid var(--rule-hard); padding-top:1rem; }
-.delivery__order b{
-  display:block; font-family:var(--display); font-weight:600;
-  font-size:clamp(1.8rem,3vw,2.6rem); line-height:1; letter-spacing:-.04em;
-  color:var(--ochre); margin-bottom:.6rem;
+.ditem{
+  display:grid; grid-template-columns:auto 1fr; gap:1rem; align-items:start;
+  background:var(--shade); padding:clamp(1.1rem,2vw,1.6rem);
+  border:1px solid var(--rule);
 }
-.delivery__order h3{
+.ditem__no{
+  width:2.4rem; height:2.4rem; display:grid; place-items:center;
+  background:var(--ink); color:var(--ochre);
+  font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.02em;
+}
+.ditem__title{
   font-family:var(--display); font-weight:600; font-size:var(--t-base);
-  letter-spacing:-.02em; margin-bottom:.3rem;
+  line-height:1.25; letter-spacing:-.02em; margin:.15rem 0 .45rem;
 }
-.delivery__order span{ display:block; font-size:var(--t-sm); line-height:1.5; color:var(--ink-70); }
+.ditem__text{ font-size:var(--t-sm); line-height:1.6; color:var(--ink-70); }
 
 @media (max-width:900px){
-  .delivery__intro{ grid-column:1 / 7; }
-  .delivery__grid{ grid-column:1 / 7; grid-template-columns:1fr; margin-top:1.6rem; }
-  .delivery__order{ grid-column:1 / 7; grid-template-columns:1fr 1fr; }
-}
-@media (max-width:560px){
-  .delivery__order{ grid-template-columns:1fr; }
+  .delivery__intro,
+  .dgroup{ grid-column:1 / 7; }
+  .dgroup__list{ grid-template-columns:1fr; }
 }
 
 /* ══════════════ ФОТО СКЛАДА ══════════════
