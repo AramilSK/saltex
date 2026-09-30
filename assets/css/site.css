@@ -642,9 +642,24 @@ html.is-loading{ overflow:hidden; }
 /* Лента уже закрыта своей нижней линией — вторая рядом лишняя */
 .clothes__strip + .colors{ border-top:0; }
 .colors__intro{ grid-column:1 / 4; }
-.colors__intro h2{
+.colors__intro h3{
   font-family:var(--display); font-weight:600;
   font-size:var(--t-md); line-height:1.1; letter-spacing:-.03em; margin-bottom:.9rem;
+}
+/* Заголовок над сеткой оттенков (правка 30.09). Текст слева занимает
+   оба ряда — заголовка и сетки, иначе его высота отодвинула бы
+   футболки вниз от заголовка. */
+.colors__title{
+  grid-column:5 / 13;
+  font-family:var(--display); font-weight:600;
+  font-size:var(--t-lg); line-height:1.02; letter-spacing:-.04em;
+  margin-bottom:clamp(1.2rem,3vh,2rem);
+}
+@media (min-width:901px){
+  .colors .rule{ grid-row:1; }
+  .colors__intro{ grid-row:2 / span 2; align-self:start; }
+  .colors__title{ grid-row:2; }
+  .swatches{ grid-row:3; }
 }
 .colors__intro p{ font-size:var(--t-sm); color:var(--ink-70); max-width:30ch; }
 .colors__intro .warn{
@@ -659,6 +674,7 @@ html.is-loading{ overflow:hidden; }
 @media (max-width:1280px){ .swatches{ grid-template-columns:repeat(6,1fr) } }
 @media (max-width:900px){
   .colors__intro{ grid-column:1 / 7; margin-bottom:2.2rem }
+  .colors__title{ grid-column:1 / 7; }
   .swatches{ grid-column:1 / 7; grid-template-columns:repeat(4,1fr) }
 }
 @media (max-width:520px){ .swatches{ grid-template-columns:repeat(3,1fr) } }
